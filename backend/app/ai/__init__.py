@@ -1,0 +1,41 @@
+"""Backend AI module re-export."""
+
+from app.ai import (
+    AgentConfigurationError,
+    AgentError,
+    AgentExecutionError,
+    BaseAgent,
+    BaseTool,
+    FunctionTool,
+    LLMClient,
+    LLMClientError,
+    LLMConfigurationError,
+    LLMRetryError,
+    LLMStructuredOutputError,
+    ToolError,
+    ToolExecutionError,
+    ToolNotFoundError,
+    ToolRegistry,
+    default_registry,
+    tool,
+)
+
+__all__ = [
+    "AgentConfigurationError",
+    "AgentError",
+    "AgentExecutionError",
+    "BaseAgent",
+    "BaseTool",
+    "FunctionTool",
+    "LLMClient",
+    "LLMClientError",
+    "LLMConfigurationError",
+    "LLMRetryError",
+    "LLMStructuredOutputError",
+    "ToolError",
+    "ToolExecutionError",
+    "ToolNotFoundError",
+    "ToolRegistry",
+    "default_registry",
+    "tool",
+]

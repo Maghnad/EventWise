@@ -1,0 +1,17 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
+
+[variables]
+APP_ENV = "production"
+APP_DEBUG = "false"
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRE_MINUTES = "120"
+OPENAI_MODEL = "gpt-4o"

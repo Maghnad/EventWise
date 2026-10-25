@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master", "develop"]
+  pull_request:
+    branches: ["main", "master", "develop"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================================
+  # Backend Workflow: Python 3.12, Ruff, Mypy, Pytest with Coverage
+  # ============================================================================
+  backend:
+    name: Backend (Python 3.12)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run Ruff linter check
+        run: ruff check .
+
+      - name: Run Ruff formatter check
+        run: ruff format --check .
+
+      - name: Run Mypy type checker
+        run: mypy app
+
+      - name: Run Pytest with test coverage (>= 80%)
+        run: pytest --cov=app --cov-fail-under=80
+
+  # ============================================================================
+  # Frontend Workflow: Node 20, ESLint, Prettier, TypeScript, Vitest
+  # ============================================================================
+  frontend:
+    name: Frontend (Node 20)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package.json
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run ESLint
+        run: npx eslint .
+
+      - name: Run Prettier check
+        run: npx prettier --check .
+
+      - name: Run TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: Run Vitest tests
+        run: npx vitest run
+
+  # ============================================================================
+  # Security Audit Workflow: pip-audit & npm audit
+  # ============================================================================
+  security-audit:
+    name: Security & Vulnerability Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Run pip-audit for Python dependencies
+        run: |
+          python -m pip install --upgrade pip pip-audit
+          pip-audit || true
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package.json
+
+      - name: Run npm audit for Frontend dependencies
+        working-directory: frontend
+        run: |
+          npm audit --audit-level=critical || true
+
