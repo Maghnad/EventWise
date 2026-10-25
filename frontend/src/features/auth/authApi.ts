@@ -6,6 +6,15 @@
  */
 
 import { api, setAccessToken, type ApiError } from "@/services/api";
+import type {
+  AuthResponse,
+  AuthTokens,
+  LoginRequest,
+  RefreshTokenRequest,
+  SignupRequest,
+  TokenRefreshResponse,
+  User,
+} from "@/shared/contracts";
 
 /* ==========================================================================
    In-Memory Auth & Non-Sensitive Storage Helpers
