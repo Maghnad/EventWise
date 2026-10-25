@@ -339,8 +339,4 @@ EventWise has undergone an exhaustive 21-point security hardening audit:
 - Add `NEXT_PUBLIC_API_BASE_URL` pointing to your deployed backend.
 - Headers and routing configurations are pre-defined in [frontend/vercel.json](file:///c:/Users/debna/Downloads/event_management/frontend/vercel.json).
 
----
 
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](file:///c:/Users/debna/Downloads/event_management/LICENSE) file for details.
