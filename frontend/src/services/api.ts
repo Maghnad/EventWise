@@ -123,12 +123,32 @@ export async function api<T>(path: string, options: ApiRequestOptions = {}): Pro
     ...customHeaders,
   };
 
-  const res = await fetch(buildUrl(path, params), {
-    credentials: "include",
-    ...rest,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  const targetUrl = buildUrl(path, params);
+  let res: Response;
+  try {
+    res = await fetch(targetUrl, {
+      credentials: "include",
+      ...rest,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (err: unknown) {
+    if (err instanceof TypeError && err.message.toLowerCase().includes("fetch")) {
+      const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
+      const isTargetHttp = targetUrl.startsWith("http://localhost") || targetUrl.startsWith("http://127.0.0.1");
+      if (isHttps && isTargetHttp) {
+        throw new ApiError(
+          0,
+          "Backend connection failed: Your Vercel frontend (HTTPS) cannot connect to http://localhost:8000 (Mixed Content blocked by browser). Please configure NEXT_PUBLIC_API_BASE_URL in your Vercel Environment Variables to your deployed backend URL.",
+        );
+      }
+      throw new ApiError(
+        0,
+        `Cannot reach backend server at ${BASE_URL}. Please ensure the backend is deployed and running.`,
+      );
+    }
+    throw err;
+  }
 
   if (!res.ok) {
     throw await parseError(res);

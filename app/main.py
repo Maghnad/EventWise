@@ -142,9 +142,7 @@ async def csrf_protect_middleware(request: Request, call_next):
 
 # ── CORS ────────────────────────────────────────────────
 origin_regex = (
-    r"^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$"
-    if settings.app_env.lower() in ("development", "dev", "test")
-    else None
+    r"^(https?://(localhost|127\.0\.0\.1)(:[0-9]+)?|https://.*\.vercel\.app)$"
 )
 
 app.add_middleware(
