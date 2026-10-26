@@ -16,11 +16,11 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body className="min-h-screen bg-black text-white flex items-center justify-center p-4">
+      <body className="flex min-h-screen items-center justify-center bg-black p-4 text-white">
         <Card
           role="alert"
           aria-live="assertive"
-          className="max-w-md w-full rounded-3xl border border-red-500/30 bg-gradient-to-b from-red-950/20 via-black to-black p-8 text-center shadow-2xl backdrop-blur-xl"
+          className="w-full max-w-md rounded-3xl border border-red-500/30 bg-gradient-to-b from-red-950/20 via-black to-black p-8 text-center shadow-2xl backdrop-blur-xl"
         >
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/20 text-3xl">
             ⚠️
@@ -32,7 +32,11 @@ export default function GlobalError({
           </p>
 
           <div className="mt-6 flex justify-center gap-3">
-            <Button variant="primary" onClick={() => reset()} className="text-xs px-4 py-2">
+            <Button
+              variant="primary"
+              onClick={() => reset()}
+              className="px-4 py-2 text-xs"
+            >
               🔄 Try Again
             </Button>
             <a

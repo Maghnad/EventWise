@@ -49,38 +49,24 @@ describe("WhatIfPanel", () => {
 
   it("renders simulator controls, sliders, and reset button", () => {
     render(
-      <WhatIfPanel
-        eventId="evt-123"
-        initialBudget={30000}
-        initialGuestCount={100}
-      />,
+      <WhatIfPanel eventId="evt-123" initialBudget={30000} initialGuestCount={100} />,
     );
 
     expect(
       screen.getByRole("heading", { name: /what-if scenario simulator/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText(/simulated guest count/i),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText(/simulated total budget/i),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/simulated guest count/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/simulated total budget/i)).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /reset simulation to baseline/i }),
     ).toBeInTheDocument();
   });
 
   it("triggers debounced simulation call when guests or budget changes", async () => {
-    vi.mocked(budgetApi.simulateWhatIfScenario).mockResolvedValue(
-      mockScenarioResponse,
-    );
+    vi.mocked(budgetApi.simulateWhatIfScenario).mockResolvedValue(mockScenarioResponse);
 
     render(
-      <WhatIfPanel
-        eventId="evt-123"
-        initialBudget={30000}
-        initialGuestCount={100}
-      />,
+      <WhatIfPanel eventId="evt-123" initialBudget={30000} initialGuestCount={100} />,
     );
 
     await waitFor(() => {
@@ -106,16 +92,10 @@ describe("WhatIfPanel", () => {
 
   it("adjusts guest count via increment buttons", async () => {
     const user = userEvent.setup();
-    vi.mocked(budgetApi.simulateWhatIfScenario).mockResolvedValue(
-      mockScenarioResponse,
-    );
+    vi.mocked(budgetApi.simulateWhatIfScenario).mockResolvedValue(mockScenarioResponse);
 
     render(
-      <WhatIfPanel
-        eventId="evt-123"
-        initialBudget={30000}
-        initialGuestCount={100}
-      />,
+      <WhatIfPanel eventId="evt-123" initialBudget={30000} initialGuestCount={100} />,
     );
 
     const plus25Btn = screen.getByRole("button", { name: /\+25 guests/i });
@@ -129,16 +109,10 @@ describe("WhatIfPanel", () => {
 
   it("applies vendor swap preset on click", async () => {
     const user = userEvent.setup();
-    vi.mocked(budgetApi.simulateWhatIfScenario).mockResolvedValue(
-      mockScenarioResponse,
-    );
+    vi.mocked(budgetApi.simulateWhatIfScenario).mockResolvedValue(mockScenarioResponse);
 
     render(
-      <WhatIfPanel
-        eventId="evt-123"
-        initialBudget={30000}
-        initialGuestCount={100}
-      />,
+      <WhatIfPanel eventId="evt-123" initialBudget={30000} initialGuestCount={100} />,
     );
 
     const presetBtn = screen.getByRole("button", {
@@ -155,16 +129,10 @@ describe("WhatIfPanel", () => {
   });
 
   it("passes jest-axe accessibility checks with no violations", async () => {
-    vi.mocked(budgetApi.simulateWhatIfScenario).mockResolvedValue(
-      mockScenarioResponse,
-    );
+    vi.mocked(budgetApi.simulateWhatIfScenario).mockResolvedValue(mockScenarioResponse);
 
     const { container } = render(
-      <WhatIfPanel
-        eventId="evt-123"
-        initialBudget={30000}
-        initialGuestCount={100}
-      />,
+      <WhatIfPanel eventId="evt-123" initialBudget={30000} initialGuestCount={100} />,
     );
 
     await waitFor(() => {

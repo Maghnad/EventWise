@@ -2,7 +2,11 @@
 
 import React from "react";
 import { Button, Card } from "@/shared/components";
-import type { TimelineOverviewResponse, TimelineTask, TaskStatus } from "@/shared/contracts";
+import type {
+  TimelineOverviewResponse,
+  TimelineTask,
+  TaskStatus,
+} from "@/shared/contracts";
 
 const STATUS_COLORS: Record<TaskStatus, string> = {
   pending: "bg-gray-500/20 text-gray-300",
@@ -91,7 +95,7 @@ export function TimelineView({
           {overview.tasks.map((task) => (
             <Card
               key={task.id}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 transition-colors hover:bg-white/[0.03]"
+              className="flex flex-col gap-4 p-4 transition-colors hover:bg-white/[0.03] sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="flex items-start gap-3">
                 {onStatusToggle && (

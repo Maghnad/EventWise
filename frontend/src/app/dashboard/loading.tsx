@@ -5,10 +5,10 @@ export default function DashboardLoading(): React.JSX.Element {
     <div
       role="status"
       aria-label="Loading dashboard"
-      className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-10 animate-pulse"
+      className="mx-auto max-w-7xl animate-pulse space-y-10 px-4 py-12 sm:px-6 lg:px-8"
     >
       {/* Header skeleton */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
           <div className="h-8 w-48 rounded-xl bg-white/10" />
           <div className="h-4 w-72 rounded-lg bg-white/5" />
@@ -17,9 +17,12 @@ export default function DashboardLoading(): React.JSX.Element {
       </div>
 
       {/* Stats row skeleton */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-24 rounded-2xl border border-white/5 bg-white/[0.02] p-5 space-y-2">
+          <div
+            key={i}
+            className="h-24 space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-5"
+          >
             <div className="h-3 w-20 rounded bg-white/10" />
             <div className="h-6 w-32 rounded bg-white/20" />
           </div>
@@ -37,9 +40,9 @@ export default function DashboardLoading(): React.JSX.Element {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-72 rounded-3xl border border-white/10 bg-white/[0.03] p-6 space-y-4"
+              className="h-72 space-y-4 rounded-3xl border border-white/10 bg-white/[0.03] p-6"
             >
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <div className="h-5 w-16 rounded-full bg-white/10" />
                 <div className="h-4 w-20 rounded bg-white/10" />
               </div>

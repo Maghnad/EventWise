@@ -70,9 +70,7 @@ export function ConceptDisplay({
           >
             🎨 Curated Color Palette
           </h3>
-          <span className="text-xs text-gray-400">
-            Click hex to copy
-          </span>
+          <span className="text-xs text-gray-400">Click hex to copy</span>
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -102,7 +100,7 @@ export function ConceptDisplay({
                   <span className="text-xs font-semibold capitalize text-indigo-400">
                     {swatch.role}
                   </span>
-                  <span className="text-[10px] font-mono text-gray-400">
+                  <span className="font-mono text-[10px] text-gray-400">
                     {copiedHex === swatch.hex_code ? "✓ Copied" : swatch.hex_code}
                   </span>
                 </div>
@@ -129,7 +127,7 @@ export function ConceptDisplay({
               key={index}
               className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all hover:border-indigo-500/30 hover:bg-white/[0.05]"
             >
-              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400 font-bold text-xs">
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-xs font-bold text-indigo-400">
                 #{index + 1}
               </div>
               <div>
@@ -157,7 +155,7 @@ export function ConceptDisplay({
               <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-purple-300">
                 Spatial Zone {index + 1}
               </div>
-              <p className="text-sm text-gray-200 leading-relaxed">{idea}</p>
+              <p className="text-sm leading-relaxed text-gray-200">{idea}</p>
             </div>
           ))}
         </div>
@@ -171,23 +169,21 @@ export function ConceptDisplay({
         >
           ⏰ High-Level Schedule & Milestones
         </h3>
-        <div className="relative border-l border-indigo-500/30 pl-6 ml-3 space-y-6">
+        <div className="relative ml-3 space-y-6 border-l border-indigo-500/30 pl-6">
           {concept.high_level_schedule.map((milestone, idx) => (
-            <div key={idx} className="relative group">
+            <div key={idx} className="group relative">
               {/* Dot */}
               <div className="absolute -left-[31px] top-1 h-3.5 w-3.5 rounded-full border-2 border-indigo-500 bg-black transition-all group-hover:scale-125 group-hover:bg-indigo-400" />
 
               <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-white/20 hover:bg-white/[0.05]">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                  <span className="text-xs font-semibold text-indigo-400 font-mono">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="font-mono text-xs font-semibold text-indigo-400">
                     {milestone.phase}
                   </span>
-                  <h4 className="text-sm font-bold text-white">
-                    {milestone.activity}
-                  </h4>
+                  <h4 className="text-sm font-bold text-white">{milestone.activity}</h4>
                 </div>
                 {milestone.description && (
-                  <p className="mt-2 text-xs text-gray-400 leading-normal">
+                  <p className="mt-2 text-xs leading-normal text-gray-400">
                     {milestone.description}
                   </p>
                 )}

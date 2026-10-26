@@ -22,7 +22,8 @@ export function AiChatPage(): React.JSX.Element {
             ✨ AI Planning Assistant
           </h1>
           <p className="text-sm text-gray-400">
-            Ask for budget allocations, milestone timelines, checklist ideas, and vendor advice.
+            Ask for budget allocations, milestone timelines, checklist ideas, and vendor
+            advice.
           </p>
         </div>
       </div>

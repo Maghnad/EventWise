@@ -81,14 +81,16 @@ describe("BudgetBreakdown Component", () => {
         overview={mockOverview}
         onEditItem={handleEdit}
         onDeleteItem={handleDelete}
-      />
+      />,
     );
 
     const editBtn = screen.getByRole("button", { name: /edit plated 3-course dinner/i });
     await user.click(editBtn);
     expect(handleEdit).toHaveBeenCalledWith(mockOverview.items[0]);
 
-    const deleteBtn = screen.getByRole("button", { name: /delete plated 3-course dinner/i });
+    const deleteBtn = screen.getByRole("button", {
+      name: /delete plated 3-course dinner/i,
+    });
     await user.click(deleteBtn);
     expect(handleDelete).toHaveBeenCalledWith("item-1");
   });

@@ -56,13 +56,15 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
         if (isMounted) setEventData(data);
       } catch (err: unknown) {
         if (isMounted) {
-          const msg = err instanceof Error ? err.message : "Failed to load event invitation";
+          const msg =
+            err instanceof Error ? err.message : "Failed to load event invitation";
           setEventError(msg);
           // Fallback event data so page is still usable in development / test mode
           setEventData({
             id: eventId,
             title: "Celebration Gala & Gathering",
-            description: "You are warmly invited to join us for an evening of celebration, dining, and festivities.",
+            description:
+              "You are warmly invited to join us for an evening of celebration, dining, and festivities.",
             event_type: "corporate",
             start_date: new Date(Date.now() + 86400000 * 30).toISOString(),
             location: "Metropolitan Hall & Garden Terrace, New York, NY",
@@ -114,7 +116,8 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
       });
       setConfirmation(res);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to submit RSVP. Please try again.";
+      const msg =
+        err instanceof Error ? err.message : "Failed to submit RSVP. Please try again.";
       setSubmitError(msg);
     } finally {
       setSubmitting(false);
@@ -139,11 +142,11 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
   return (
     <main
       aria-label="Digital RSVP and Event Portal"
-      className="min-h-screen bg-radial-gradient from-indigo-950/40 via-black to-black py-12 px-4 sm:px-6 lg:px-8 text-gray-100"
+      className="bg-radial-gradient min-h-screen from-indigo-950/40 via-black to-black px-4 py-12 text-gray-100 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-4xl space-y-10">
         {/* Event Invitation Banner */}
-        <header className="text-center space-y-4 rounded-3xl border border-indigo-500/20 bg-gradient-to-b from-indigo-950/30 via-black/50 to-black/80 p-8 shadow-2xl backdrop-blur-xl sm:p-12">
+        <header className="space-y-4 rounded-3xl border border-indigo-500/20 bg-gradient-to-b from-indigo-950/30 via-black/50 to-black/80 p-8 text-center shadow-2xl backdrop-blur-xl sm:p-12">
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-300">
             <span>✨</span>
             <span>You Are Invited</span>
@@ -154,7 +157,7 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
           </h1>
 
           {eventData?.description && (
-            <p className="mx-auto max-w-2xl text-sm sm:text-base text-gray-300 leading-relaxed">
+            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-gray-300 sm:text-base">
               {eventData.description}
             </p>
           )}
@@ -162,18 +165,18 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
           {eventError && (
             <div
               role="status"
-              className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-2 text-xs text-amber-300 text-center"
+              className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-2 text-center text-xs text-amber-300"
             >
               Notice: Preview invitation mode active.
             </div>
           )}
 
           {/* Event Details Grid */}
-          <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto text-left">
+          <div className="mx-auto grid max-w-xl grid-cols-1 gap-4 pt-4 text-left sm:grid-cols-2">
             <div className="flex items-start gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-4">
               <span className="text-2xl">📅</span>
               <div>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block">
+                <span className="block text-[11px] font-semibold uppercase tracking-wider text-gray-400">
                   Date & Time
                 </span>
                 <span className="text-sm font-bold text-white">
@@ -192,7 +195,7 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
             <div className="flex items-start gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-4">
               <span className="text-2xl">📍</span>
               <div>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block">
+                <span className="block text-[11px] font-semibold uppercase tracking-wider text-gray-400">
                   Location
                 </span>
                 <span className="text-sm font-bold text-white">
@@ -209,23 +212,25 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
           <Card
             role="region"
             aria-live="polite"
-            className="border-emerald-500/30 bg-gradient-to-b from-emerald-950/20 via-black/60 to-black/90 p-8 sm:p-12 text-center rounded-3xl shadow-2xl"
+            className="rounded-3xl border-emerald-500/30 bg-gradient-to-b from-emerald-950/20 via-black/60 to-black/90 p-8 text-center shadow-2xl sm:p-12"
           >
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/20 text-3xl shadow-lg shadow-emerald-500/20">
               🎉
             </div>
 
-            <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold text-white">
+            <h2 className="mt-4 text-2xl font-extrabold text-white sm:text-3xl">
               RSVP Successfully Received!
             </h2>
-            <p className="mt-2 text-sm text-emerald-300 font-medium">
+            <p className="mt-2 text-sm font-medium text-emerald-300">
               {confirmation.message}
             </p>
 
-            <div className="my-8 max-w-md mx-auto rounded-2xl border border-white/10 bg-black/40 p-5 text-left text-xs space-y-2.5">
+            <div className="mx-auto my-8 max-w-md space-y-2.5 rounded-2xl border border-white/10 bg-black/40 p-5 text-left text-xs">
               <div className="flex justify-between border-b border-white/5 pb-2">
                 <span className="text-gray-400">Guest:</span>
-                <span className="font-semibold text-white">{confirmation.guest.full_name}</span>
+                <span className="font-semibold text-white">
+                  {confirmation.guest.full_name}
+                </span>
               </div>
               <div className="flex justify-between border-b border-white/5 pb-2">
                 <span className="text-gray-400">Status:</span>
@@ -239,21 +244,22 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
                   {1 + (confirmation.guest.plus_ones || 0)} person(s)
                 </span>
               </div>
-              {confirmation.guest.dietary_restrictions && confirmation.guest.dietary_restrictions.length > 0 && (
-                <div className="flex justify-between border-b border-white/5 pb-2">
-                  <span className="text-gray-400">Dietary:</span>
-                  <span className="font-semibold text-white">
-                    {confirmation.guest.dietary_restrictions.join(", ")}
-                  </span>
-                </div>
-              )}
+              {confirmation.guest.dietary_restrictions &&
+                confirmation.guest.dietary_restrictions.length > 0 && (
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span className="text-gray-400">Dietary:</span>
+                    <span className="font-semibold text-white">
+                      {confirmation.guest.dietary_restrictions.join(", ")}
+                    </span>
+                  </div>
+                )}
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Button
                 variant="secondary"
                 onClick={handleEditRsvp}
-                className="text-xs px-4 py-2"
+                className="px-4 py-2 text-xs"
                 aria-label="Edit or update your RSVP details"
               >
                 ✏️ Edit My RSVP
@@ -262,13 +268,12 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
           </Card>
         ) : (
           /* RSVP Form */
-          <Card className="rounded-3xl border-white/10 bg-black/60 p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
+          <Card className="rounded-3xl border-white/10 bg-black/60 p-6 shadow-2xl backdrop-blur-xl sm:p-10">
             <div className="mb-8 border-b border-white/10 pb-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-white">
-                Kindly Respond
-              </h2>
+              <h2 className="text-xl font-bold text-white sm:text-2xl">Kindly Respond</h2>
               <p className="mt-1 text-xs text-gray-400">
-                Please complete your details below to confirm attendance for catering and seating plans.
+                Please complete your details below to confirm attendance for catering and
+                seating plans.
               </p>
             </div>
 
@@ -287,7 +292,7 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
                 <div>
                   <label
                     htmlFor="guest-fullname"
-                    className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2"
+                    className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-300"
                   >
                     Your Full Name *
                   </label>
@@ -306,7 +311,7 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
                 <div>
                   <label
                     htmlFor="guest-email"
-                    className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2"
+                    className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-300"
                   >
                     Email Address *
                   </label>
@@ -325,13 +330,13 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
 
               {/* 2. Attendance Status Selection */}
               <div>
-                <p className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-3">
+                <p className="mb-3 block text-xs font-semibold uppercase tracking-wider text-gray-300">
                   Will You Attend? *
                 </p>
                 <div
                   role="radiogroup"
                   aria-label="RSVP attendance decision"
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                  className="grid grid-cols-1 gap-4 sm:grid-cols-2"
                 >
                   <button
                     type="button"
@@ -388,11 +393,11 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
                       <div>
                         <label
                           htmlFor="plus-ones-select"
-                          className="text-xs font-semibold uppercase tracking-wider text-gray-300 block"
+                          className="block text-xs font-semibold uppercase tracking-wider text-gray-300"
                         >
                           Additional Plus-Ones
                         </label>
-                        <p className="text-xs text-gray-400 mt-0.5">
+                        <p className="mt-0.5 text-xs text-gray-400">
                           How many guests are accompanying you?
                         </p>
                       </div>
@@ -419,14 +424,15 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
 
                   {/* 4. Dietary Restrictions */}
                   <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-300 block mb-1">
+                    <p className="mb-1 block text-xs font-semibold uppercase tracking-wider text-gray-300">
                       🥗 Dietary Preferences & Allergies
                     </p>
-                    <p className="text-xs text-gray-400 mb-3">
-                      Select all that apply for your party so our catering team can prepare accordingly.
+                    <p className="mb-3 text-xs text-gray-400">
+                      Select all that apply for your party so our catering team can
+                      prepare accordingly.
                     </p>
 
-                    <div className="flex flex-wrap gap-2 mb-3">
+                    <div className="mb-3 flex flex-wrap gap-2">
                       {COMMON_DIETARY_OPTIONS.map((opt) => {
                         const isSelected = selectedDietary.includes(opt);
                         return (
@@ -462,7 +468,7 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
               <div>
                 <label
                   htmlFor="guest-notes"
-                  className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2"
+                  className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-300"
                 >
                   Message or Note to the Host (Optional)
                 </label>
@@ -494,12 +500,13 @@ export function RsvpPage({ eventId }: RsvpPageProps): React.JSX.Element {
         {/* Embedded Guest FAQ Bot Section */}
         <section aria-label="Guest FAQ and Assistant" className="pt-4">
           <div className="mb-4">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <h2 className="flex items-center gap-2 text-lg font-bold text-white">
               <span>💬</span>
               <span>Event FAQ & Assistant</span>
             </h2>
             <p className="text-xs text-gray-400">
-              Instant answers regarding venue navigation, dress code, parking, and timings.
+              Instant answers regarding venue navigation, dress code, parking, and
+              timings.
             </p>
           </div>
 

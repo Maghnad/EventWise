@@ -5,10 +5,7 @@
  */
 
 import { api } from "@/services/api";
-import type {
-  AIChatInputRequest,
-  ChatTurnResponse,
-} from "@/shared/contracts";
+import type { AIChatInputRequest, ChatTurnResponse } from "@/shared/contracts";
 
 export async function sendChatMessage(
   eventId: string,

@@ -7,4 +7,3 @@ expect.extend(toHaveNoViolations);
 if (typeof window !== "undefined") {
   window.HTMLElement.prototype.scrollIntoView = function () {};
 }
-

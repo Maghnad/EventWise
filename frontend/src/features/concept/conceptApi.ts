@@ -5,10 +5,7 @@
  */
 
 import { api } from "@/services/api";
-import type {
-  AIMoodboardResponse,
-  ConceptBoard,
-} from "@/shared/contracts";
+import type { AIMoodboardResponse, ConceptBoard } from "@/shared/contracts";
 
 export interface GenerateConceptPayload {
   vibe_brief?: string;

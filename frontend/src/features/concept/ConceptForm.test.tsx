@@ -9,9 +9,7 @@ describe("ConceptForm", () => {
     render(<ConceptForm onSubmit={vi.fn()} isLoading={false} />);
 
     expect(screen.getByText("✨ Design Creative Concept")).toBeInTheDocument();
-    expect(
-      screen.getByLabelText(/vibe brief & aesthetic vision/i),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/vibe brief & aesthetic vision/i)).toBeInTheDocument();
     expect(screen.getByText(/quick inspiration/i)).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /generate concept board/i }),
@@ -49,19 +47,11 @@ describe("ConceptForm", () => {
     });
     await user.click(submitBtn);
 
-    expect(handleSubmit).toHaveBeenCalledWith(
-      "Elegant rooftop garden party with jazz",
-    );
+    expect(handleSubmit).toHaveBeenCalledWith("Elegant rooftop garden party with jazz");
   });
 
   it("disables submit button and shows loading spinner when isLoading is true", () => {
-    render(
-      <ConceptForm
-        onSubmit={vi.fn()}
-        isLoading={true}
-        defaultBrief="Test brief"
-      />,
-    );
+    render(<ConceptForm onSubmit={vi.fn()} isLoading={true} defaultBrief="Test brief" />);
 
     const submitBtn = screen.getByRole("button", {
       name: /crafting concept\.\.\./i,
@@ -70,9 +60,7 @@ describe("ConceptForm", () => {
   });
 
   it("passes jest-axe accessibility checks with no violations", async () => {
-    const { container } = render(
-      <ConceptForm onSubmit={vi.fn()} isLoading={false} />,
-    );
+    const { container } = render(<ConceptForm onSubmit={vi.fn()} isLoading={false} />);
 
     const results = await axe(container);
     expect(results).toHaveNoViolations();

@@ -118,42 +118,42 @@ export function EventsPage(): React.JSX.Element {
           </div>
         )}
 
-      {/* Create / Edit modal */}
-      <EventForm
-        isOpen={formOpen}
-        onClose={() => setFormOpen(false)}
-        initialData={editing}
-        onSubmit={handleSubmit}
-        submitting={submitting}
-      />
+        {/* Create / Edit modal */}
+        <EventForm
+          isOpen={formOpen}
+          onClose={() => setFormOpen(false)}
+          initialData={editing}
+          onSubmit={handleSubmit}
+          submitting={submitting}
+        />
 
-      {/* Delete confirmation */}
-      {deleteConfirm && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Confirm delete"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        >
+        {/* Delete confirmation */}
+        {deleteConfirm && (
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => setDeleteConfirm(null)}
-            aria-hidden="true"
-          />
-          <Card className="relative z-10 max-w-sm text-center">
-            <p className="text-lg font-semibold text-white">Delete this event?</p>
-            <p className="mt-2 text-sm text-gray-400">This action cannot be undone.</p>
-            <div className="mt-6 flex justify-center gap-3">
-              <Button variant="ghost" onClick={() => setDeleteConfirm(null)}>
-                Cancel
-              </Button>
-              <Button variant="danger" onClick={() => handleDelete(deleteConfirm)}>
-                Delete
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Confirm delete"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <div
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={() => setDeleteConfirm(null)}
+              aria-hidden="true"
+            />
+            <Card className="relative z-10 max-w-sm text-center">
+              <p className="text-lg font-semibold text-white">Delete this event?</p>
+              <p className="mt-2 text-sm text-gray-400">This action cannot be undone.</p>
+              <div className="mt-6 flex justify-center gap-3">
+                <Button variant="ghost" onClick={() => setDeleteConfirm(null)}>
+                  Cancel
+                </Button>
+                <Button variant="danger" onClick={() => handleDelete(deleteConfirm)}>
+                  Delete
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
       </section>
     </ErrorBoundary>
   );

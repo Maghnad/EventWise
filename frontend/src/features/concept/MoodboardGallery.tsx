@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import type { AIMoodboardResponse, DalleImagePrompt, SpatialDecorItem } from "@/shared/contracts";
+import type {
+  AIMoodboardResponse,
+  DalleImagePrompt,
+  SpatialDecorItem,
+} from "@/shared/contracts";
 import { Button, Card, Modal } from "@/shared/components";
 
 export interface MoodboardGalleryProps {
@@ -23,8 +27,7 @@ const ZONE_FALLBACK_IMAGES: Record<string, string> = {
     "https://images.unsplash.com/photo-1519225424982-f857e3f89078?auto=format&fit=crop&w=1200&q=80",
   lounge:
     "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?auto=format&fit=crop&w=1200&q=80",
-  bar:
-    "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?auto=format&fit=crop&w=1200&q=80",
+  bar: "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?auto=format&fit=crop&w=1200&q=80",
   default:
     "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1200&q=80",
 };
@@ -63,9 +66,7 @@ export function MoodboardGallery({
             <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">
               Spatial Decor & GenAI Concepts
             </h2>
-            <p className="mt-2 text-sm text-gray-300">
-              {moodboard.concept_summary}
-            </p>
+            <p className="mt-2 text-sm text-gray-300">{moodboard.concept_summary}</p>
           </div>
           <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 px-4 py-3 text-right">
             <span className="block text-[10px] font-semibold uppercase tracking-wider text-purple-300">
@@ -100,9 +101,7 @@ export function MoodboardGallery({
             >
               <div>
                 <div className="flex items-start justify-between gap-2">
-                  <h4 className="text-base font-bold text-white">
-                    {item.zone}
-                  </h4>
+                  <h4 className="text-base font-bold text-white">{item.zone}</h4>
                   <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-400">
                     ${item.estimated_cost.toLocaleString()}
                   </span>
@@ -149,7 +148,8 @@ export function MoodboardGallery({
               📸 GenAI Visual Staging & Diffusion Prompts
             </h3>
             <p className="mt-0.5 text-xs text-gray-400">
-              Photorealistic visual concepts powered by generative AI. Click prompt to copy or view fullscreen.
+              Photorealistic visual concepts powered by generative AI. Click prompt to
+              copy or view fullscreen.
             </p>
           </div>
         </div>
@@ -180,7 +180,7 @@ export function MoodboardGallery({
                     <span className="rounded-lg bg-black/60 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">
                       {imgPrompt.target_zone}
                     </span>
-                    <span className="rounded-md bg-white/20 px-2 py-0.5 text-[10px] font-mono text-gray-200 backdrop-blur-md">
+                    <span className="rounded-md bg-white/20 px-2 py-0.5 font-mono text-[10px] text-gray-200 backdrop-blur-md">
                       {imgPrompt.aspect_ratio}
                     </span>
                   </div>
@@ -211,7 +211,7 @@ export function MoodboardGallery({
                   <div className="mt-4 flex items-center gap-2 border-t border-white/5 pt-3">
                     <Button
                       variant="secondary"
-                      className="flex-1 text-xs px-2.5 py-1.5"
+                      className="flex-1 px-2.5 py-1.5 text-xs"
                       onClick={() => handleCopyPrompt(imgPrompt.prompt, index)}
                       aria-label="Copy GenAI prompt to clipboard"
                     >
@@ -219,7 +219,7 @@ export function MoodboardGallery({
                     </Button>
                     <Button
                       variant="ghost"
-                      className="text-xs px-2 py-1.5"
+                      className="px-2 py-1.5 text-xs"
                       onClick={() => setSelectedPrompt(imgPrompt)}
                       aria-label="View prompt in full modal"
                     >
@@ -261,17 +261,18 @@ export function MoodboardGallery({
             </div>
 
             <div className="flex items-center justify-between text-xs text-gray-400">
-              <span>Aspect Ratio: <strong>{selectedPrompt.aspect_ratio}</strong></span>
+              <span>
+                Aspect Ratio: <strong>{selectedPrompt.aspect_ratio}</strong>
+              </span>
               {selectedPrompt.style_notes && (
-                <span>Style: <strong>{selectedPrompt.style_notes}</strong></span>
+                <span>
+                  Style: <strong>{selectedPrompt.style_notes}</strong>
+                </span>
               )}
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
-              <Button
-                variant="secondary"
-                onClick={() => setSelectedPrompt(null)}
-              >
+              <Button variant="secondary" onClick={() => setSelectedPrompt(null)}>
                 Close
               </Button>
               <Button

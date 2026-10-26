@@ -79,12 +79,7 @@ describe("VendorChecklist", () => {
     const user = userEvent.setup();
     const handleToggle = vi.fn();
 
-    render(
-      <VendorChecklist
-        checklist={mockChecklist}
-        onToggleComplete={handleToggle}
-      />,
-    );
+    render(<VendorChecklist checklist={mockChecklist} onToggleComplete={handleToggle} />);
 
     const toggleButton = screen.getByRole("button", {
       name: /toggle completion for confirm tasting menu/i,

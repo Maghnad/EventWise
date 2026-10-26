@@ -98,7 +98,9 @@ export async function login(payload: LoginRequest): Promise<AuthResponse> {
  * @returns TokenRefreshResponse with a fresh token pair.
  */
 export async function refreshToken(token?: string): Promise<TokenRefreshResponse> {
-  const payload: RefreshTokenRequest | undefined = token ? { refresh_token: token } : undefined;
+  const payload: RefreshTokenRequest | undefined = token
+    ? { refresh_token: token }
+    : undefined;
   return api<TokenRefreshResponse>("/auth/refresh", {
     method: "POST",
     body: payload,

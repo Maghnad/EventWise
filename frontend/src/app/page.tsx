@@ -5,7 +5,11 @@ import React from "react";
    Lightweight SVG Icons (No external dependencies, crisp 1.75px stroke)
    ========================================================================== */
 
-function SparklesIcon({ className = "h-4 w-4" }: { className?: string }): React.JSX.Element {
+function SparklesIcon({
+  className = "h-4 w-4",
+}: {
+  className?: string;
+}): React.JSX.Element {
   return (
     <svg
       className={className}
@@ -26,7 +30,11 @@ function SparklesIcon({ className = "h-4 w-4" }: { className?: string }): React.
   );
 }
 
-function ArrowRightIcon({ className = "h-4 w-4" }: { className?: string }): React.JSX.Element {
+function ArrowRightIcon({
+  className = "h-4 w-4",
+}: {
+  className?: string;
+}): React.JSX.Element {
   return (
     <svg
       className={className}
@@ -44,7 +52,11 @@ function ArrowRightIcon({ className = "h-4 w-4" }: { className?: string }): Reac
   );
 }
 
-function CalculatorIcon({ className = "h-5 w-5" }: { className?: string }): React.JSX.Element {
+function CalculatorIcon({
+  className = "h-5 w-5",
+}: {
+  className?: string;
+}): React.JSX.Element {
   return (
     <svg
       className={className}
@@ -70,7 +82,11 @@ function CalculatorIcon({ className = "h-5 w-5" }: { className?: string }): Reac
   );
 }
 
-function CalendarDaysIcon({ className = "h-5 w-5" }: { className?: string }): React.JSX.Element {
+function CalendarDaysIcon({
+  className = "h-5 w-5",
+}: {
+  className?: string;
+}): React.JSX.Element {
   return (
     <svg
       className={className}
@@ -96,7 +112,11 @@ function CalendarDaysIcon({ className = "h-5 w-5" }: { className?: string }): Re
   );
 }
 
-function CheckSquareIcon({ className = "h-5 w-5" }: { className?: string }): React.JSX.Element {
+function CheckSquareIcon({
+  className = "h-5 w-5",
+}: {
+  className?: string;
+}): React.JSX.Element {
   return (
     <svg
       className={className}
@@ -262,7 +282,7 @@ export default function HomePage(): React.JSX.Element {
 
       <main>
         {/* ── 2. Hero Section ─────────────────────────────────────────────────── */}
-        <section className="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-24 text-center">
+        <section className="mx-auto max-w-6xl px-6 pb-16 pt-20 text-center sm:pb-24 sm:pt-28">
           {/* Eyebrow Label */}
           <div className="inline-flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-xs font-medium text-zinc-300">
             <span className="flex h-1.5 w-1.5 rounded-full bg-indigo-500" />
@@ -276,8 +296,8 @@ export default function HomePage(): React.JSX.Element {
 
           {/* One-Line Subheadline */}
           <p className="mx-auto mt-5 max-w-2xl text-balance text-base text-zinc-400 sm:text-lg sm:leading-relaxed">
-            An intelligent workspace for event directors and teams — orchestrating budgets,
-            milestone schedules, vendor scopes, and guest RSVPs with precision.
+            An intelligent workspace for event directors and teams — orchestrating
+            budgets, milestone schedules, vendor scopes, and guest RSVPs with precision.
           </p>
 
           {/* Action CTAs */}
@@ -315,7 +335,7 @@ export default function HomePage(): React.JSX.Element {
                     Planning Active
                   </span>
                 </div>
-                <div className="text-xs font-mono text-zinc-500">Live Workspace</div>
+                <div className="font-mono text-xs text-zinc-500">Live Workspace</div>
               </div>
 
               {/* Mockup Dashboard Content */}
@@ -326,7 +346,9 @@ export default function HomePage(): React.JSX.Element {
                   <div className="rounded-lg border border-zinc-800/80 bg-zinc-900/50 p-4">
                     <div className="flex items-center justify-between text-xs text-zinc-400">
                       <span>Total Budget</span>
-                      <span className="font-mono text-emerald-400 font-medium">68% Allocated</span>
+                      <span className="font-mono font-medium text-emerald-400">
+                        68% Allocated
+                      </span>
                     </div>
                     <div className="mt-2 text-2xl font-bold tracking-tight text-zinc-100">
                       $45,000.00
@@ -343,7 +365,9 @@ export default function HomePage(): React.JSX.Element {
                   <div className="rounded-lg border border-zinc-800/80 bg-zinc-900/50 p-4">
                     <div className="flex items-center justify-between text-xs text-zinc-400">
                       <span>Timeline Health</span>
-                      <span className="font-mono text-indigo-400 font-medium">14 of 18 Complete</span>
+                      <span className="font-mono font-medium text-indigo-400">
+                        14 of 18 Complete
+                      </span>
                     </div>
                     <div className="mt-2 text-2xl font-bold tracking-tight text-zinc-100">
                       78% On Track
@@ -360,7 +384,9 @@ export default function HomePage(): React.JSX.Element {
                   <div className="rounded-lg border border-zinc-800/80 bg-zinc-900/50 p-4">
                     <div className="flex items-center justify-between text-xs text-zinc-400">
                       <span>Confirmed RSVPs</span>
-                      <span className="font-mono text-emerald-400 font-medium">92% Response</span>
+                      <span className="font-mono font-medium text-emerald-400">
+                        92% Response
+                      </span>
                     </div>
                     <div className="mt-2 text-2xl font-bold tracking-tight text-zinc-100">
                       142 / 150
@@ -383,15 +409,18 @@ export default function HomePage(): React.JSX.Element {
                       <span>Synthesized Operating Strategy</span>
                     </div>
                     <p className="mt-2 text-xs leading-relaxed text-zinc-300">
-                      Autonomous budget allocation confirmed with standard 15% catering variance.
-                      Floral and audio-visual contracts reviewed with customized RFP clauses applied.
-                      RSVP concierge FAQ bot answered 34 venue parking and transit questions.
+                      Autonomous budget allocation confirmed with standard 15% catering
+                      variance. Floral and audio-visual contracts reviewed with customized
+                      RFP clauses applied. RSVP concierge FAQ bot answered 34 venue
+                      parking and transit questions.
                     </p>
                   </div>
 
                   {/* Operational Status */}
                   <div className="flex flex-col justify-between rounded-lg border border-zinc-800/80 bg-zinc-900/30 p-4">
-                    <div className="text-xs font-medium text-zinc-400">System Readiness</div>
+                    <div className="text-xs font-medium text-zinc-400">
+                      System Readiness
+                    </div>
                     <div className="mt-1 flex items-center gap-2 text-xs font-medium text-zinc-200">
                       <CheckIcon className="h-4 w-4 text-emerald-400" />
                       <span>All 5 vendor scopes locked</span>
@@ -408,12 +437,15 @@ export default function HomePage(): React.JSX.Element {
         </section>
 
         {/* ── 3. Subtle Social Proof Strip ────────────────────────────────────── */}
-        <section aria-label="Social Proof" className="border-y border-zinc-800/80 bg-zinc-900/20 py-8">
+        <section
+          aria-label="Social Proof"
+          className="border-y border-zinc-800/80 bg-zinc-900/20 py-8"
+        >
           <div className="mx-auto max-w-6xl px-6 text-center">
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
               Trusted by independent planners, agency directors, and enterprise teams
             </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-12 gap-y-3 text-xs sm:text-sm font-semibold tracking-wider text-zinc-400">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-12 gap-y-3 text-xs font-semibold tracking-wider text-zinc-400 sm:text-sm">
               <span>✦ KINETIK FORUM</span>
               <span>✦ MERIDIAN SUMMITS</span>
               <span>✦ STUDIO FOUNDRY</span>
@@ -424,7 +456,11 @@ export default function HomePage(): React.JSX.Element {
         </section>
 
         {/* ── 4. Features Section ─────────────────────────────────────────────── */}
-        <section id="features" aria-labelledby="features-heading" className="py-20 sm:py-28">
+        <section
+          id="features"
+          aria-labelledby="features-heading"
+          className="py-20 sm:py-28"
+        >
           <div className="mx-auto max-w-6xl px-6">
             <div className="text-left sm:text-center">
               <h2
@@ -436,7 +472,7 @@ export default function HomePage(): React.JSX.Element {
               <p className="mt-2 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
                 Everything required to orchestrate flawless events
               </p>
-              <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-zinc-400">
+              <p className="mx-auto mt-3 max-w-2xl text-sm text-zinc-400 sm:text-base">
                 Replace disconnected spreadsheets, email threads, and loose notes with an
                 integrated operating system.
               </p>
@@ -483,8 +519,9 @@ export default function HomePage(): React.JSX.Element {
               <p className="mt-2 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
                 From concept to showtime in three steps
               </p>
-              <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-zinc-400">
-                Coordinated intelligence turns broad visions into actionable execution plans.
+              <p className="mx-auto mt-3 max-w-2xl text-sm text-zinc-400 sm:text-base">
+                Coordinated intelligence turns broad visions into actionable execution
+                plans.
               </p>
             </div>
 
@@ -512,11 +549,11 @@ export default function HomePage(): React.JSX.Element {
         {/* ── 6. Final CTA Section ────────────────────────────────────────────── */}
         <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-6xl px-6">
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-10 sm:p-14 text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-100">
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-10 text-center sm:p-14">
+              <h2 className="text-2xl font-bold tracking-tight text-zinc-100 sm:text-3xl">
                 Ready to plan your next event with total confidence?
               </h2>
-              <p className="mx-auto mt-3 max-w-lg text-sm sm:text-base text-zinc-400">
+              <p className="mx-auto mt-3 max-w-lg text-sm text-zinc-400 sm:text-base">
                 Join forward-thinking event teams using EventWise to orchestrate seamless,
                 stress-free experiences.
               </p>
@@ -577,9 +614,9 @@ export default function HomePage(): React.JSX.Element {
           <div className="flex flex-col items-center justify-between gap-4 pt-6 text-xs text-zinc-500 sm:flex-row">
             <p>© 2026 EventWise, Inc. All rights reserved.</p>
             <div className="flex gap-4">
-              <span className="hover:text-zinc-400 transition-colors">Privacy</span>
-              <span className="hover:text-zinc-400 transition-colors">Terms</span>
-              <span className="hover:text-zinc-400 transition-colors">Security</span>
+              <span className="transition-colors hover:text-zinc-400">Privacy</span>
+              <span className="transition-colors hover:text-zinc-400">Terms</span>
+              <span className="transition-colors hover:text-zinc-400">Security</span>
             </div>
           </div>
         </div>

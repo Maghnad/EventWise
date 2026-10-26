@@ -2,7 +2,11 @@
 
 import React from "react";
 import { Button, Card } from "@/shared/components";
-import type { BudgetItem, BudgetItemStatus, BudgetOverviewResponse } from "@/shared/contracts";
+import type {
+  BudgetItem,
+  BudgetItemStatus,
+  BudgetOverviewResponse,
+} from "@/shared/contracts";
 
 const STATUS_COLORS: Record<BudgetItemStatus, string> = {
   planned: "bg-gray-500/20 text-gray-300",
@@ -81,7 +85,11 @@ export function BudgetBreakdown({
         >
           <div
             className={`h-full rounded-full transition-all duration-300 ${
-              pctUsed > 90 ? "bg-red-500" : pctUsed > 70 ? "bg-amber-500" : "bg-emerald-500"
+              pctUsed > 90
+                ? "bg-red-500"
+                : pctUsed > 70
+                  ? "bg-amber-500"
+                  : "bg-emerald-500"
             }`}
             style={{ width: `${Math.min(pctUsed, 100)}%` }}
           />
@@ -109,26 +117,47 @@ export function BudgetBreakdown({
           <table className="min-w-full text-sm">
             <thead>
               <tr className="border-b border-white/10 bg-white/5">
-                <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-400">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-400"
+                >
                   Category
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-400">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-400"
+                >
                   Name
                 </th>
-                <th scope="col" className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-400">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-400"
+                >
                   Estimated
                 </th>
-                <th scope="col" className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-400">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-400"
+                >
                   Actual
                 </th>
-                <th scope="col" className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-400">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-400"
+                >
                   Paid
                 </th>
-                <th scope="col" className="px-4 py-3 text-center text-xs font-medium uppercase text-gray-400">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-center text-xs font-medium uppercase text-gray-400"
+                >
                   Status
                 </th>
                 {(onEditItem || onDeleteItem) && (
-                  <th scope="col" className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-400">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-400"
+                  >
                     Actions
                   </th>
                 )}

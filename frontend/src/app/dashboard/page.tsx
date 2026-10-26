@@ -118,19 +118,32 @@ export default function DashboardPage(): React.JSX.Element {
               checklistTotal = checklist.total_items;
               checklistPct =
                 checklist.total_items > 0
-                  ? Math.min(100, Math.round((checklist.completed_items / checklist.total_items) * 100))
+                  ? Math.min(
+                      100,
+                      Math.round(
+                        (checklist.completed_items / checklist.total_items) * 100,
+                      ),
+                    )
                   : 0;
             } catch {
               // Checklist fallback
             }
 
             const budgetSpent = Number(detail.budget_summary?.total_spent ?? 0);
-            const totalBudget = Number(detail.budget_summary?.total_budget ?? evt.total_budget ?? 0);
-            const budgetPct = totalBudget > 0 ? Math.min(100, Math.round((budgetSpent / totalBudget) * 100)) : 0;
+            const totalBudget = Number(
+              detail.budget_summary?.total_budget ?? evt.total_budget ?? 0,
+            );
+            const budgetPct =
+              totalBudget > 0
+                ? Math.min(100, Math.round((budgetSpent / totalBudget) * 100))
+                : 0;
 
             const timelineDone = detail.timeline_summary?.completed_tasks ?? 0;
             const timelineTotal = detail.timeline_summary?.total_tasks ?? 0;
-            const timelinePct = timelineTotal > 0 ? Math.min(100, Math.round((timelineDone / timelineTotal) * 100)) : 0;
+            const timelinePct =
+              timelineTotal > 0
+                ? Math.min(100, Math.round((timelineDone / timelineTotal) * 100))
+                : 0;
 
             newMetrics[evt.id] = {
               budgetSpent,
@@ -177,8 +190,10 @@ export default function DashboardPage(): React.JSX.Element {
     return events.filter((evt) => {
       const matchesSearch =
         evt.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (evt.location && evt.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (evt.description && evt.description.toLowerCase().includes(searchQuery.toLowerCase()));
+        (evt.location &&
+          evt.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (evt.description &&
+          evt.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
       const matchesStatus =
         statusFilter === "all" || evt.status.toLowerCase() === statusFilter.toLowerCase();
@@ -240,12 +255,12 @@ export default function DashboardPage(): React.JSX.Element {
       <ErrorBoundary onReset={refetch}>
         <main
           aria-label="EventWise Main Dashboard"
-          className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12"
+          className="mx-auto max-w-7xl space-y-12 px-4 py-10 sm:px-6 sm:py-16 lg:px-8"
         >
           {/* Header */}
-          <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/10 pb-8">
+          <header className="flex flex-col gap-4 border-b border-white/10 pb-8 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-300 mb-2">
+              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-300">
                 <span>⚡</span>
                 <span>Command Center</span>
               </div>
@@ -253,7 +268,8 @@ export default function DashboardPage(): React.JSX.Element {
                 Event Dashboard
               </h1>
               <p className="mt-1 text-sm text-gray-400">
-                Live visibility across event budgets, milestone timelines, and vendor deliverables.
+                Live visibility across event budgets, milestone timelines, and vendor
+                deliverables.
               </p>
             </div>
 
@@ -267,7 +283,10 @@ export default function DashboardPage(): React.JSX.Element {
           </header>
 
           {/* Quick Stats Overview */}
-          <section aria-label="Key Aggregate Metrics" className="grid gap-4 sm:grid-cols-3">
+          <section
+            aria-label="Key Aggregate Metrics"
+            className="grid gap-4 sm:grid-cols-3"
+          >
             <Card className="rounded-2xl border-white/10 bg-white/[0.02] p-5">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
                 Total Managed Events
@@ -275,7 +294,7 @@ export default function DashboardPage(): React.JSX.Element {
               <p className="mt-2 text-3xl font-extrabold text-white">
                 {loading ? "..." : aggregateStats.totalEvents}
               </p>
-              <p className="mt-1 text-xs text-indigo-400 font-medium">
+              <p className="mt-1 text-xs font-medium text-indigo-400">
                 {total} recorded in workspace
               </p>
             </Card>
@@ -310,7 +329,7 @@ export default function DashboardPage(): React.JSX.Element {
           {/* Feature Modules Navigation Grid */}
           <section aria-label="Feature modules">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <h2 className="flex items-center gap-2 text-lg font-bold text-white">
                 <span>🚀</span>
                 <span>Planning Modules</span>
               </h2>
@@ -321,7 +340,7 @@ export default function DashboardPage(): React.JSX.Element {
                 <Card
                   key={section.title}
                   onClick={() => handleCardClick(section)}
-                  className="group relative cursor-pointer border border-white/10 bg-white/[0.03] p-5 transition-all duration-200 hover:-translate-y-1 hover:border-indigo-500/50 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-indigo-500/10 rounded-2xl"
+                  className="group relative cursor-pointer rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-200 hover:-translate-y-1 hover:border-indigo-500/50 hover:bg-white/[0.06] hover:shadow-xl hover:shadow-indigo-500/10"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-3xl" role="img" aria-label={section.title}>
@@ -334,12 +353,14 @@ export default function DashboardPage(): React.JSX.Element {
                   <h3 className="mt-3 text-base font-bold text-white transition-colors group-hover:text-indigo-300">
                     {section.title}
                   </h3>
-                  <p className="mt-1 text-xs text-gray-400 leading-relaxed">
+                  <p className="mt-1 text-xs leading-relaxed text-gray-400">
                     {section.description}
                   </p>
                   <div className="mt-4 flex items-center text-xs font-semibold text-indigo-400 group-hover:text-indigo-300">
                     <span>Explore {section.title}</span>
-                    <span className="ml-1.5 transition-transform group-hover:translate-x-1">→</span>
+                    <span className="ml-1.5 transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
                   </div>
                 </Card>
               ))}
@@ -350,12 +371,16 @@ export default function DashboardPage(): React.JSX.Element {
           <section aria-labelledby="all-events-heading" className="space-y-6 pt-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 id="all-events-heading" className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                <h2
+                  id="all-events-heading"
+                  className="flex items-center gap-2 text-2xl font-bold tracking-tight text-white"
+                >
                   <span>📊</span>
                   <span>Event Progress Overview</span>
                 </h2>
-                <p className="text-xs text-gray-400 mt-1">
-                  Real-time budget spend, timeline task completion, and vendor checklist metrics.
+                <p className="mt-1 text-xs text-gray-400">
+                  Real-time budget spend, timeline task completion, and vendor checklist
+                  metrics.
                 </p>
               </div>
 
@@ -366,7 +391,7 @@ export default function DashboardPage(): React.JSX.Element {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Filter events by name or venue..."
-                  className="rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none w-56 sm:w-64"
+                  className="w-56 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none sm:w-64"
                   aria-label="Filter events search"
                 />
 
@@ -387,14 +412,16 @@ export default function DashboardPage(): React.JSX.Element {
 
             {/* Loading State */}
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-20 space-y-3">
+              <div className="flex flex-col items-center justify-center space-y-3 py-20">
                 <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
-                <p className="text-xs text-gray-400 font-medium">Loading event progress data...</p>
+                <p className="text-xs font-medium text-gray-400">
+                  Loading event progress data...
+                </p>
               </div>
             ) : error ? (
               /* Error State */
-              <Card className="rounded-2xl border-red-500/30 bg-red-500/10 p-8 text-center max-w-md mx-auto">
-                <p className="text-3xl mb-2">⚠️</p>
+              <Card className="mx-auto max-w-md rounded-2xl border-red-500/30 bg-red-500/10 p-8 text-center">
+                <p className="mb-2 text-3xl">⚠️</p>
                 <h3 className="text-base font-bold text-white">Failed to load events</h3>
                 <p className="mt-1 text-xs text-red-300">{error.message}</p>
                 <Button className="mt-4 text-xs" onClick={refetch}>
@@ -405,7 +432,11 @@ export default function DashboardPage(): React.JSX.Element {
               /* Empty State */
               <EmptyState
                 icon="🎉"
-                title={events.length === 0 ? "No events created yet" : "No matching events found"}
+                title={
+                  events.length === 0
+                    ? "No events created yet"
+                    : "No matching events found"
+                }
                 description={
                   events.length === 0
                     ? "Get started by creating your first event to unlock live progress tracking, budget analysis, and AI planning."
@@ -439,18 +470,18 @@ export default function DashboardPage(): React.JSX.Element {
                   return (
                     <Card
                       key={event.id}
-                      className="flex flex-col justify-between rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] via-black/40 to-black/70 p-6 shadow-xl transition-all hover:border-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/5 backdrop-blur-xl"
+                      className="flex flex-col justify-between rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] via-black/40 to-black/70 p-6 shadow-xl backdrop-blur-xl transition-all hover:border-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/5"
                     >
                       {/* Event Header info */}
                       <div>
-                        <div className="flex items-center justify-between gap-2 mb-3">
+                        <div className="mb-3 flex items-center justify-between gap-2">
                           <span
                             className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
                               event.status === "completed"
                                 ? "bg-emerald-500/20 text-emerald-300"
                                 : event.status === "confirmed"
-                                ? "bg-blue-500/20 text-blue-300"
-                                : "bg-purple-500/20 text-purple-300"
+                                  ? "bg-blue-500/20 text-blue-300"
+                                  : "bg-purple-500/20 text-purple-300"
                             }`}
                           >
                             {event.status}
@@ -462,7 +493,7 @@ export default function DashboardPage(): React.JSX.Element {
                         </div>
 
                         <Link href={`/dashboard/events/${event.id}`}>
-                          <h3 className="text-lg font-bold text-white transition-colors hover:text-indigo-300 truncate">
+                          <h3 className="truncate text-lg font-bold text-white transition-colors hover:text-indigo-300">
                             {event.title}
                           </h3>
                         </Link>
@@ -485,14 +516,23 @@ export default function DashboardPage(): React.JSX.Element {
                       <div className="my-6 space-y-4 rounded-2xl border border-white/5 bg-black/40 p-4">
                         {/* 1. Budget Spent Progress */}
                         <div>
-                          <div className="flex items-center justify-between text-xs mb-1.5">
-                            <span className="font-semibold text-gray-300 flex items-center gap-1.5">
+                          <div className="mb-1.5 flex items-center justify-between text-xs">
+                            <span className="flex items-center gap-1.5 font-semibold text-gray-300">
                               <span>💰</span>
                               <span>Budget Spent</span>
                             </span>
-                            <span className="font-mono text-gray-400 font-medium">
-                              ${m.budgetSpent.toLocaleString()} / ${m.totalBudget.toLocaleString()}{" "}
-                              <strong className={m.budgetPct > 90 ? "text-red-400" : m.budgetPct > 70 ? "text-amber-400" : "text-emerald-400"}>
+                            <span className="font-mono font-medium text-gray-400">
+                              ${m.budgetSpent.toLocaleString()} / $
+                              {m.totalBudget.toLocaleString()}{" "}
+                              <strong
+                                className={
+                                  m.budgetPct > 90
+                                    ? "text-red-400"
+                                    : m.budgetPct > 70
+                                      ? "text-amber-400"
+                                      : "text-emerald-400"
+                                }
+                              >
                                 ({m.budgetPct}%)
                               </strong>
                             </span>
@@ -503,8 +543,8 @@ export default function DashboardPage(): React.JSX.Element {
                                 m.budgetPct > 90
                                   ? "bg-red-500"
                                   : m.budgetPct > 70
-                                  ? "bg-amber-500"
-                                  : "bg-emerald-500"
+                                    ? "bg-amber-500"
+                                    : "bg-emerald-500"
                               }`}
                               style={{ width: `${Math.min(m.budgetPct, 100)}%` }}
                             />
@@ -513,14 +553,16 @@ export default function DashboardPage(): React.JSX.Element {
 
                         {/* 2. Timeline Completion Progress */}
                         <div>
-                          <div className="flex items-center justify-between text-xs mb-1.5">
-                            <span className="font-semibold text-gray-300 flex items-center gap-1.5">
+                          <div className="mb-1.5 flex items-center justify-between text-xs">
+                            <span className="flex items-center gap-1.5 font-semibold text-gray-300">
                               <span>⏳</span>
                               <span>Timeline Tasks</span>
                             </span>
-                            <span className="font-mono text-gray-400 font-medium">
+                            <span className="font-mono font-medium text-gray-400">
                               {m.timelineDone} / {m.timelineTotal} done{" "}
-                              <strong className="text-indigo-400">({m.timelinePct}%)</strong>
+                              <strong className="text-indigo-400">
+                                ({m.timelinePct}%)
+                              </strong>
                             </span>
                           </div>
                           <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
@@ -533,14 +575,16 @@ export default function DashboardPage(): React.JSX.Element {
 
                         {/* 3. Vendor Checklist Progress */}
                         <div>
-                          <div className="flex items-center justify-between text-xs mb-1.5">
-                            <span className="font-semibold text-gray-300 flex items-center gap-1.5">
+                          <div className="mb-1.5 flex items-center justify-between text-xs">
+                            <span className="flex items-center gap-1.5 font-semibold text-gray-300">
                               <span>✅</span>
                               <span>Checklist Done</span>
                             </span>
-                            <span className="font-mono text-gray-400 font-medium">
+                            <span className="font-mono font-medium text-gray-400">
                               {m.checklistDone} / {m.checklistTotal} done{" "}
-                              <strong className="text-purple-400">({m.checklistPct}%)</strong>
+                              <strong className="text-purple-400">
+                                ({m.checklistPct}%)
+                              </strong>
                             </span>
                           </div>
                           <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
@@ -556,28 +600,28 @@ export default function DashboardPage(): React.JSX.Element {
                       <div className="grid grid-cols-5 gap-1 border-t border-white/10 pt-3 text-center text-[10px] font-semibold text-gray-300">
                         <Link
                           href={`/dashboard/events/${event.id}/budget`}
-                          className="rounded-lg p-1.5 hover:bg-white/10 hover:text-white transition-colors"
+                          className="rounded-lg p-1.5 transition-colors hover:bg-white/10 hover:text-white"
                           title="Budget"
                         >
                           💰 Budget
                         </Link>
                         <Link
                           href={`/dashboard/events/${event.id}/timeline`}
-                          className="rounded-lg p-1.5 hover:bg-white/10 hover:text-white transition-colors"
+                          className="rounded-lg p-1.5 transition-colors hover:bg-white/10 hover:text-white"
                           title="Timeline"
                         >
                           ⏳ Sched
                         </Link>
                         <Link
                           href={`/dashboard/events/${event.id}/vendors`}
-                          className="rounded-lg p-1.5 hover:bg-white/10 hover:text-white transition-colors"
+                          className="rounded-lg p-1.5 transition-colors hover:bg-white/10 hover:text-white"
                           title="Vendors"
                         >
                           🤝 Vendors
                         </Link>
                         <Link
                           href={`/dashboard/events/${event.id}/concept`}
-                          className="rounded-lg p-1.5 hover:bg-white/10 hover:text-white transition-colors"
+                          className="rounded-lg p-1.5 transition-colors hover:bg-white/10 hover:text-white"
                           title="Concept & Moodboard"
                         >
                           🎨 Vibe
@@ -585,7 +629,7 @@ export default function DashboardPage(): React.JSX.Element {
                         <Link
                           href={`/rsvp/${event.id}`}
                           target="_blank"
-                          className="rounded-lg p-1.5 text-indigo-400 hover:bg-indigo-500/20 hover:text-indigo-200 transition-colors"
+                          className="rounded-lg p-1.5 text-indigo-400 transition-colors hover:bg-indigo-500/20 hover:text-indigo-200"
                           title="Digital RSVP Page"
                         >
                           🔗 RSVP
@@ -619,11 +663,15 @@ export default function DashboardPage(): React.JSX.Element {
                     <div>
                       <p className="text-sm font-semibold text-white">{evt.title}</p>
                       <p className="text-xs text-gray-400">
-                        {evt.start_date ? new Date(evt.start_date).toLocaleDateString() : "Date TBD"} ·{" "}
-                        {evt.location || "Location TBD"}
+                        {evt.start_date
+                          ? new Date(evt.start_date).toLocaleDateString()
+                          : "Date TBD"}{" "}
+                        · {evt.location || "Location TBD"}
                       </p>
                     </div>
-                    <span className="text-xs font-semibold text-indigo-400">Select →</span>
+                    <span className="text-xs font-semibold text-indigo-400">
+                      Select →
+                    </span>
                   </button>
                 ))}
               </div>

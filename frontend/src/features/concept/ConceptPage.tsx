@@ -84,7 +84,8 @@ export function ConceptPage({ eventId }: ConceptPageProps): React.JSX.Element {
               🎨 Concept & Visual Moodboard
             </h1>
             <p className="mt-2 text-sm text-gray-400">
-              Translate your event vision into color palettes, styling motifs, spatial flow, and Generative AI visual staging prompts.
+              Translate your event vision into color palettes, styling motifs, spatial
+              flow, and Generative AI visual staging prompts.
             </p>
           </div>
 
@@ -131,7 +132,7 @@ export function ConceptPage({ eventId }: ConceptPageProps): React.JSX.Element {
           <Button
             variant="ghost"
             onClick={() => handleConceptSubmit("")}
-            className="text-xs px-2.5 py-1 text-red-200 hover:bg-red-500/20"
+            className="px-2.5 py-1 text-xs text-red-200 hover:bg-red-500/20"
           >
             Retry
           </Button>

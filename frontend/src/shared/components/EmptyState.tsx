@@ -31,36 +31,31 @@ export function EmptyState({
     <Card
       role="region"
       aria-label={title}
-      className={`rounded-2xl border-dashed border-white/15 bg-white/[0.02] p-8 sm:p-12 text-center backdrop-blur-sm ${className}`}
+      className={`rounded-2xl border-dashed border-white/15 bg-white/[0.02] p-8 text-center backdrop-blur-sm sm:p-12 ${className}`}
     >
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 text-3xl shadow-inner">
         {typeof icon === "string" ? <span>{icon}</span> : icon}
       </div>
 
       <h3 className="mt-4 text-lg font-bold text-white sm:text-xl">{title}</h3>
-      <p className="mx-auto mt-2 max-w-md text-xs sm:text-sm text-gray-400 leading-relaxed">
+      <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-gray-400 sm:text-sm">
         {description}
       </p>
 
       {(actionText || secondaryActionText) && (
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          {actionText && (
-            actionHref ? (
+          {actionText &&
+            (actionHref ? (
               <Link href={actionHref}>
-                <Button variant="primary" className="text-xs px-4 py-2">
+                <Button variant="primary" className="px-4 py-2 text-xs">
                   {actionText}
                 </Button>
               </Link>
             ) : (
-              <Button
-                variant="primary"
-                onClick={onAction}
-                className="text-xs px-4 py-2"
-              >
+              <Button variant="primary" onClick={onAction} className="px-4 py-2 text-xs">
                 {actionText}
               </Button>
-            )
-          )}
+            ))}
 
           {secondaryActionText && secondaryActionHref && (
             <Link

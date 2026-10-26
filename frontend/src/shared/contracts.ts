@@ -631,5 +631,3 @@ export interface GuestFaqResponse {
   event_title: string;
   suggested_questions: string[];
 }
-
-

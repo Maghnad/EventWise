@@ -2,10 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "@/shared/components";
-import type {
-  BudgetOverviewResponse,
-  WhatIfScenarioResponse,
-} from "@/shared/contracts";
+import type { BudgetOverviewResponse, WhatIfScenarioResponse } from "@/shared/contracts";
 import { simulateWhatIfScenario } from "./budgetApi";
 
 export interface WhatIfPanelProps {
@@ -68,7 +65,8 @@ export function WhatIfPanel({
         });
         setScenarioData(res);
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Failed to simulate scenario";
+        const message =
+          err instanceof Error ? err.message : "Failed to simulate scenario";
         setError(message);
       } finally {
         setIsSimulating(false);
@@ -123,7 +121,8 @@ export function WhatIfPanel({
             </h2>
           </div>
           <p className="mt-1.5 text-xs text-gray-400">
-            Adjust guest count, budget limits, or swap vendor priorities to see instant reallocation diffs.
+            Adjust guest count, budget limits, or swap vendor priorities to see instant
+            reallocation diffs.
           </p>
         </div>
 
@@ -137,7 +136,7 @@ export function WhatIfPanel({
           <Button
             variant="secondary"
             onClick={handleReset}
-            className="text-xs px-3 py-1.5"
+            className="px-3 py-1.5 text-xs"
             aria-label="Reset simulation to baseline"
           >
             Reset to Baseline
@@ -331,8 +330,8 @@ export function WhatIfPanel({
                     scenarioData.budget_variance > 0
                       ? "bg-amber-500/20 text-amber-300"
                       : scenarioData.budget_variance < 0
-                      ? "bg-emerald-500/20 text-emerald-300"
-                      : "bg-gray-500/20 text-gray-300"
+                        ? "bg-emerald-500/20 text-emerald-300"
+                        : "bg-gray-500/20 text-gray-300"
                   }`}
                 >
                   {scenarioData.budget_variance >= 0
@@ -355,7 +354,9 @@ export function WhatIfPanel({
                   {scenarioData.scenario_guest_count} guests
                 </span>
                 <span className="rounded-full bg-indigo-500/20 px-2 py-0.5 text-xs font-semibold text-indigo-300">
-                  {scenarioData.scenario_guest_count - scenarioData.baseline_guest_count >= 0
+                  {scenarioData.scenario_guest_count -
+                    scenarioData.baseline_guest_count >=
+                  0
                     ? `+${scenarioData.scenario_guest_count - scenarioData.baseline_guest_count}`
                     : `${scenarioData.scenario_guest_count - scenarioData.baseline_guest_count}`}
                 </span>
@@ -376,18 +377,21 @@ export function WhatIfPanel({
                 </span>
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                    scenarioData.cost_per_guest_scenario > scenarioData.cost_per_guest_baseline
+                    scenarioData.cost_per_guest_scenario >
+                    scenarioData.cost_per_guest_baseline
                       ? "bg-amber-500/20 text-amber-300"
                       : "bg-emerald-500/20 text-emerald-300"
                   }`}
                 >
-                  {scenarioData.cost_per_guest_scenario >= scenarioData.cost_per_guest_baseline
+                  {scenarioData.cost_per_guest_scenario >=
+                  scenarioData.cost_per_guest_baseline
                     ? `+$${(scenarioData.cost_per_guest_scenario - scenarioData.cost_per_guest_baseline).toFixed(2)}`
                     : `-$${Math.abs(scenarioData.cost_per_guest_scenario - scenarioData.cost_per_guest_baseline).toFixed(2)}`}
                 </span>
               </div>
               <p className="mt-1 text-xs text-gray-500">
-                Baseline: ${Number(scenarioData.cost_per_guest_baseline).toFixed(2)} / guest
+                Baseline: ${Number(scenarioData.cost_per_guest_baseline).toFixed(2)} /
+                guest
               </p>
             </Card>
           </div>
@@ -411,11 +415,21 @@ export function WhatIfPanel({
               <table className="w-full text-left text-xs text-gray-300">
                 <thead className="border-b border-white/5 bg-white/[0.02] text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3 font-semibold">Category</th>
-                    <th scope="col" className="px-6 py-3 font-semibold">Simulated Amount</th>
-                    <th scope="col" className="px-6 py-3 font-semibold">Allocation %</th>
-                    <th scope="col" className="px-6 py-3 font-semibold">Variance vs. Current</th>
-                    <th scope="col" className="px-6 py-3 font-semibold">Planning Notes</th>
+                    <th scope="col" className="px-6 py-3 font-semibold">
+                      Category
+                    </th>
+                    <th scope="col" className="px-6 py-3 font-semibold">
+                      Simulated Amount
+                    </th>
+                    <th scope="col" className="px-6 py-3 font-semibold">
+                      Allocation %
+                    </th>
+                    <th scope="col" className="px-6 py-3 font-semibold">
+                      Variance vs. Current
+                    </th>
+                    <th scope="col" className="px-6 py-3 font-semibold">
+                      Planning Notes
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -423,7 +437,9 @@ export function WhatIfPanel({
                     const catKey = item.category.toLowerCase().trim();
                     const baselineAmt = baselineCategoryMap.get(catKey);
                     const hasBaseline = baselineAmt !== undefined;
-                    const diff = hasBaseline ? Number(item.allocated_amount) - baselineAmt : 0;
+                    const diff = hasBaseline
+                      ? Number(item.allocated_amount) - baselineAmt
+                      : 0;
 
                     return (
                       <tr key={idx} className="transition-colors hover:bg-white/[0.02]">
@@ -453,23 +469,21 @@ export function WhatIfPanel({
                                 diff > 0
                                   ? "text-amber-400"
                                   : diff < 0
-                                  ? "text-emerald-400"
-                                  : "text-gray-400"
+                                    ? "text-emerald-400"
+                                    : "text-gray-400"
                               }`}
                             >
                               {diff > 0
                                 ? `+$${diff.toLocaleString()}`
                                 : diff < 0
-                                ? `-$${Math.abs(diff).toLocaleString()}`
-                                : "$0"}
+                                  ? `-$${Math.abs(diff).toLocaleString()}`
+                                  : "$0"}
                             </span>
                           ) : (
                             <span className="text-gray-500">—</span>
                           )}
                         </td>
-                        <td className="px-6 py-3 text-gray-400">
-                          {item.notes || "—"}
-                        </td>
+                        <td className="px-6 py-3 text-gray-400">{item.notes || "—"}</td>
                       </tr>
                     );
                   })}

@@ -61,7 +61,8 @@ export function useConcept(eventId: string): UseConceptReturn {
         setMoodboard(res);
         return res;
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Failed to generate moodboard";
+        const message =
+          err instanceof Error ? err.message : "Failed to generate moodboard";
         setError(message);
         return null;
       } finally {

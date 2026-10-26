@@ -44,7 +44,8 @@ export function GuestFAQBot({
   ]);
   const [inputQuestion, setInputQuestion] = useState("");
   const [isAsking, setIsAsking] = useState(false);
-  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>(DEFAULT_QUESTIONS);
+  const [suggestedQuestions, setSuggestedQuestions] =
+    useState<string[]>(DEFAULT_QUESTIONS);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -62,7 +63,10 @@ export function GuestFAQBot({
       id: `guest-${Date.now()}`,
       sender: "guest",
       text: question,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -79,7 +83,10 @@ export function GuestFAQBot({
         id: `bot-${Date.now()}`,
         sender: "bot",
         text: res.answer,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
 
       setMessages((prev) => [...prev, botMsg]);
@@ -91,7 +98,10 @@ export function GuestFAQBot({
         id: `bot-${Date.now()}`,
         sender: "bot",
         text: `The event organizer will provide full details near the date. Feel free to leave a note on your RSVP for any custom requirements!`,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
       setMessages((prev) => [...prev, fallbackMsg]);
     } finally {
@@ -102,11 +112,11 @@ export function GuestFAQBot({
   const content = (
     <div
       className={`flex flex-col rounded-2xl border border-purple-500/20 bg-gradient-to-b from-gray-950/95 via-purple-950/30 to-black/95 shadow-2xl backdrop-blur-2xl ${
-        isFloating ? "w-80 sm:w-96 max-h-[500px]" : "w-full"
+        isFloating ? "max-h-[500px] w-80 sm:w-96" : "w-full"
       }`}
     >
       {/* Bot Header */}
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3.5 bg-white/[0.02]">
+      <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.02] px-4 py-3.5">
         <div className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-600 text-sm shadow-md shadow-purple-500/20">
             💬
@@ -118,15 +128,15 @@ export function GuestFAQBot({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-500/20">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
             Active
           </span>
           {isFloating && (
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="rounded-lg p-1 text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
               aria-label="Close FAQ Assistant"
             >
               ✕
@@ -137,7 +147,7 @@ export function GuestFAQBot({
 
       {/* Suggested chips */}
       <div className="border-b border-white/5 bg-white/[0.01] px-4 py-2.5">
-        <span className="text-[10px] uppercase font-semibold tracking-wider text-purple-300 block mb-1.5">
+        <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-purple-300">
           Common Questions
         </span>
         <div className="flex flex-wrap gap-1.5">
@@ -147,7 +157,7 @@ export function GuestFAQBot({
               type="button"
               onClick={() => handleSend(q)}
               disabled={isAsking}
-              className="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-0.5 text-[11px] text-purple-200 transition-all hover:bg-purple-500/20 hover:border-purple-400 disabled:opacity-40"
+              className="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-0.5 text-[11px] text-purple-200 transition-all hover:border-purple-400 hover:bg-purple-500/20 disabled:opacity-40"
             >
               {q}
             </button>
@@ -160,7 +170,7 @@ export function GuestFAQBot({
         role="log"
         aria-live="polite"
         aria-label="FAQ Conversation"
-        className="flex-1 space-y-3 overflow-y-auto p-4 max-h-[280px] min-h-[200px]"
+        className="max-h-[280px] min-h-[200px] flex-1 space-y-3 overflow-y-auto p-4"
       >
         {messages.map((msg) => {
           const isGuest = msg.sender === "guest";
@@ -169,9 +179,9 @@ export function GuestFAQBot({
               key={msg.id}
               className={`flex flex-col ${isGuest ? "items-end" : "items-start"}`}
             >
-              <div className="flex items-center gap-1.5 mb-0.5 text-[10px] text-gray-400">
+              <div className="mb-0.5 flex items-center gap-1.5 text-[10px] text-gray-400">
                 <span className="font-semibold text-gray-300">
-                  {isGuest ? (guestName || "You") : "Event Bot"}
+                  {isGuest ? guestName || "You" : "Event Bot"}
                 </span>
                 <span>•</span>
                 <span>{msg.timestamp}</span>
@@ -180,8 +190,8 @@ export function GuestFAQBot({
               <div
                 className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-xs leading-relaxed ${
                   isGuest
-                    ? "bg-purple-600 text-white rounded-br-xs"
-                    : "border border-white/10 bg-white/[0.04] text-gray-200 rounded-bl-xs"
+                    ? "rounded-br-xs bg-purple-600 text-white"
+                    : "rounded-bl-xs border border-white/10 bg-white/[0.04] text-gray-200"
                 }`}
               >
                 <p className="whitespace-pre-line">{msg.text}</p>
@@ -192,10 +202,10 @@ export function GuestFAQBot({
 
         {isAsking && (
           <div
-            className="flex items-center gap-2 text-[11px] text-purple-300 bg-purple-500/10 rounded-xl px-3 py-1.5 animate-pulse"
+            className="flex animate-pulse items-center gap-2 rounded-xl bg-purple-500/10 px-3 py-1.5 text-[11px] text-purple-300"
             aria-live="assertive"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-ping" />
+            <span className="h-1.5 w-1.5 animate-ping rounded-full bg-purple-400" />
             <span>Finding answer...</span>
           </div>
         )}
@@ -209,7 +219,7 @@ export function GuestFAQBot({
           e.preventDefault();
           handleSend();
         }}
-        className="border-t border-white/10 p-3 bg-black/40 flex items-center gap-2 rounded-b-2xl"
+        className="flex items-center gap-2 rounded-b-2xl border-t border-white/10 bg-black/40 p-3"
       >
         <input
           type="text"
@@ -217,13 +227,13 @@ export function GuestFAQBot({
           onChange={(e) => setInputQuestion(e.target.value)}
           placeholder="Ask a question about the event..."
           disabled={isAsking}
-          className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition-all"
+          className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white placeholder-gray-500 transition-all focus:border-purple-500 focus:outline-none"
           aria-label="Type your question for the event host"
         />
         <Button
           type="submit"
           disabled={!inputQuestion.trim() || isAsking}
-          className="text-xs px-3 py-2 bg-purple-600 hover:bg-purple-500"
+          className="bg-purple-600 px-3 py-2 text-xs hover:bg-purple-500"
           aria-label="Send question"
         >
           {isAsking ? "..." : "Ask →"}

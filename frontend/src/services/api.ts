@@ -62,7 +62,11 @@ async function parseError(res: Response): Promise<ApiError> {
   let customMessage = "";
   if (detailObj && typeof detailObj.detail === "string") {
     customMessage = detailObj.detail;
-  } else if (detailObj && typeof detailObj.detail === "object" && detailObj.detail?.message) {
+  } else if (
+    detailObj &&
+    typeof detailObj.detail === "object" &&
+    detailObj.detail?.message
+  ) {
     customMessage = detailObj.detail.message;
   }
   const message = customMessage || `${res.status} ${res.statusText}`;
@@ -134,8 +138,11 @@ export async function api<T>(path: string, options: ApiRequestOptions = {}): Pro
     });
   } catch (err: unknown) {
     if (err instanceof TypeError && err.message.toLowerCase().includes("fetch")) {
-      const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
-      const isTargetHttp = targetUrl.startsWith("http://localhost") || targetUrl.startsWith("http://127.0.0.1");
+      const isHttps =
+        typeof window !== "undefined" && window.location.protocol === "https:";
+      const isTargetHttp =
+        targetUrl.startsWith("http://localhost") ||
+        targetUrl.startsWith("http://127.0.0.1");
       if (isHttps && isTargetHttp) {
         throw new ApiError(
           0,

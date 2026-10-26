@@ -521,7 +521,9 @@ async def generate_plan(
             if vendor_item.estimated_budget_range:
                 notes_parts.append(f"Range: {vendor_item.estimated_budget_range}")
             if vendor_item.questions_to_ask:
-                notes_parts.append(f"Questions: {'; '.join(vendor_item.questions_to_ask)}")
+                notes_parts.append(
+                    f"Questions: {'; '.join(vendor_item.questions_to_ask)}"
+                )
             if vendor_item.description:
                 notes_parts.append(vendor_item.description)
 

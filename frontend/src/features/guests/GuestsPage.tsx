@@ -119,7 +119,7 @@ export function GuestsPage({ eventId }: GuestsPageProps): React.JSX.Element {
           <Link
             href={`/rsvp/${eventId}`}
             target="_blank"
-            className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-3.5 py-2 text-xs font-semibold text-indigo-300 transition-all hover:bg-indigo-500/20 hover:border-indigo-400"
+            className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-3.5 py-2 text-xs font-semibold text-indigo-300 transition-all hover:border-indigo-400 hover:bg-indigo-500/20"
             aria-label="Open public Digital RSVP page"
           >
             🔗 Public RSVP Page

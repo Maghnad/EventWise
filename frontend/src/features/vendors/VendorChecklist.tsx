@@ -102,7 +102,7 @@ export function VendorChecklist({
                 {items.map((item) => (
                   <Card
                     key={item.id}
-                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 transition-colors hover:bg-white/[0.03]"
+                    className="flex flex-col gap-3 p-4 transition-colors hover:bg-white/[0.03] sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="flex items-start gap-3">
                       {onToggleComplete && (
@@ -122,8 +122,10 @@ export function VendorChecklist({
 
                       <div>
                         <p
-                          className={`font-medium text-sm ${
-                            item.is_completed ? "text-gray-400 line-through" : "text-white"
+                          className={`text-sm font-medium ${
+                            item.is_completed
+                              ? "text-gray-400 line-through"
+                              : "text-white"
                           }`}
                         >
                           {item.task_name}

@@ -24,13 +24,7 @@ const mockEvent: Event = {
 
 describe("EventForm Component", () => {
   it("renders all form fields when open", () => {
-    render(
-      <EventForm
-        isOpen={true}
-        onClose={vi.fn()}
-        onSubmit={vi.fn()}
-      />
-    );
+    render(<EventForm isOpen={true} onClose={vi.fn()} onSubmit={vi.fn()} />);
 
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/type/i)).toBeInTheDocument();
@@ -50,7 +44,7 @@ describe("EventForm Component", () => {
         initialData={mockEvent}
         onClose={vi.fn()}
         onSubmit={vi.fn()}
-      />
+      />,
     );
 
     expect(screen.getByLabelText(/title/i)).toHaveValue("Annual Tech Gala");
@@ -61,13 +55,7 @@ describe("EventForm Component", () => {
 
   it("validates required fields on submission", async () => {
     const handleSubmit = vi.fn();
-    render(
-      <EventForm
-        isOpen={true}
-        onClose={vi.fn()}
-        onSubmit={handleSubmit}
-      />
-    );
+    render(<EventForm isOpen={true} onClose={vi.fn()} onSubmit={handleSubmit} />);
 
     const submitBtn = screen.getByRole("button", { name: /^create$/i });
     fireEvent.click(submitBtn);
@@ -82,13 +70,7 @@ describe("EventForm Component", () => {
     const user = userEvent.setup();
     const handleSubmit = vi.fn().mockResolvedValue(undefined);
 
-    render(
-      <EventForm
-        isOpen={true}
-        onClose={vi.fn()}
-        onSubmit={handleSubmit}
-      />
-    );
+    render(<EventForm isOpen={true} onClose={vi.fn()} onSubmit={handleSubmit} />);
 
     await user.type(screen.getByLabelText(/title/i), "Sunset Wedding Celebration");
     await user.type(screen.getByLabelText(/location/i), "Golden Gate Beach");
@@ -108,11 +90,7 @@ describe("EventForm Component", () => {
 
   it("has no accessibility violations (jest-axe)", async () => {
     const { container } = render(
-      <EventForm
-        isOpen={true}
-        onClose={vi.fn()}
-        onSubmit={vi.fn()}
-      />
+      <EventForm isOpen={true} onClose={vi.fn()} onSubmit={vi.fn()} />,
     );
 
     const results = await axe(container);

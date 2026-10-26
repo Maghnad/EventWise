@@ -151,7 +151,7 @@ export function BudgetPage({ eventId }: BudgetPageProps): React.JSX.Element {
 
       {/* What-If Scenario Simulator */}
       {showSimulator && (
-        <div className="mb-10 animate-fadeIn">
+        <div className="animate-fadeIn mb-10">
           <WhatIfPanel
             eventId={eventId}
             initialBudget={overview.total_budget}

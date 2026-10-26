@@ -149,9 +149,12 @@ export default function EventDetailPage(): React.JSX.Element {
               <Link href={`/dashboard/events/${params.eventId}/concept`}>
                 <Card className="h-full cursor-pointer transition-all hover:border-purple-500/50 hover:bg-white/[0.08]">
                   <div className="text-2xl">🎨</div>
-                  <h3 className="mt-3 text-lg font-semibold text-white">Concept & Moodboard</h3>
+                  <h3 className="mt-3 text-lg font-semibold text-white">
+                    Concept & Moodboard
+                  </h3>
                   <p className="mt-1 text-xs text-gray-400">
-                    Aesthetic palettes, decor motifs, spatial flow, and GenAI visual staging.
+                    Aesthetic palettes, decor motifs, spatial flow, and GenAI visual
+                    staging.
                   </p>
                   <span className="mt-4 inline-block text-xs font-medium text-purple-400">
                     Design concept →

@@ -3,7 +3,8 @@ import { RsvpPage } from "@/features/guests";
 
 export const metadata: Metadata = {
   title: "Digital RSVP & Event Invitation | EventWise",
-  description: "Respond to your event invitation and ask questions to the event concierge.",
+  description:
+    "Respond to your event invitation and ask questions to the event concierge.",
 };
 
 interface PageProps {

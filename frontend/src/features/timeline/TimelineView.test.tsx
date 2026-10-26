@@ -50,7 +50,9 @@ describe("TimelineView Component", () => {
     expect(screen.getByText("1")).toBeInTheDocument();
     expect(screen.getByText("33%")).toBeInTheDocument();
 
-    const progress = screen.getByRole("progressbar", { name: /timeline progress percentage/i });
+    const progress = screen.getByRole("progressbar", {
+      name: /timeline progress percentage/i,
+    });
     expect(progress).toHaveAttribute("aria-valuenow", "33");
   });
 
@@ -75,7 +77,7 @@ describe("TimelineView Component", () => {
         onStatusToggle={handleToggle}
         onEditTask={handleEdit}
         onDeleteTask={handleDelete}
-      />
+      />,
     );
 
     const toggleBtn = screen.getByRole("button", {
@@ -88,7 +90,9 @@ describe("TimelineView Component", () => {
     await user.click(editBtn);
     expect(handleEdit).toHaveBeenCalledWith(mockOverview.tasks[0]);
 
-    const deleteBtn = screen.getByRole("button", { name: /delete confirm venue deposit/i });
+    const deleteBtn = screen.getByRole("button", {
+      name: /delete confirm venue deposit/i,
+    });
     await user.click(deleteBtn);
     expect(handleDelete).toHaveBeenCalledWith("task-1");
   });
