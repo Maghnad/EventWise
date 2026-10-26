@@ -99,11 +99,21 @@ class BaseAgent(ABC):
         try:
             return await self.tools.execute(tool_name, **kwargs)
         except ToolNotFoundError as exc:
-            logger.error("Agent '%s' attempted to execute unregistered tool: %s", self.name, tool_name)
-            raise AgentExecutionError(f"Tool '{tool_name}' not available to agent '{self.name}'.") from exc
+            logger.error(
+                "Agent '%s' attempted to execute unregistered tool: %s",
+                self.name,
+                tool_name,
+            )
+            raise AgentExecutionError(
+                f"Tool '{tool_name}' not available to agent '{self.name}'."
+            ) from exc
         except Exception as exc:
-            logger.exception("Agent '%s' failed executing tool '%s': %s", self.name, tool_name, exc)
-            raise AgentExecutionError(f"Execution of tool '{tool_name}' failed: {exc}") from exc
+            logger.exception(
+                "Agent '%s' failed executing tool '%s': %s", self.name, tool_name, exc
+            )
+            raise AgentExecutionError(
+                f"Execution of tool '{tool_name}' failed: {exc}"
+            ) from exc
 
     async def call_llm(
         self,
@@ -123,7 +133,9 @@ class BaseAgent(ABC):
         Returns:
             Generated response string.
         """
-        sys_prompt = system_override if system_override is not None else self.system_prompt
+        sys_prompt = (
+            system_override if system_override is not None else self.system_prompt
+        )
         return await self.llm_client.generate_text(
             prompt=prompt,
             system_prompt=sys_prompt,
@@ -149,7 +161,9 @@ class BaseAgent(ABC):
         Returns:
             An instance of ``response_model``.
         """
-        sys_prompt = system_override if system_override is not None else self.system_prompt
+        sys_prompt = (
+            system_override if system_override is not None else self.system_prompt
+        )
         return await self.llm_client.generate_structured(
             prompt=prompt,
             response_model=response_model,

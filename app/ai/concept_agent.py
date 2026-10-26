@@ -140,7 +140,9 @@ class ConceptAgent(BaseAgent):
         location: str | None = None,
     ) -> str:
         """Construct prompt combining the vibe brief and optional parameters."""
-        lines = [f"Design a creative concept board based on the following vision:\n\"{vibe_brief}\""]
+        lines = [
+            f'Design a creative concept board based on the following vision:\n"{vibe_brief}"'
+        ]
         if event_type:
             lines.append(f"- Event Type: {event_type}")
         if guest_count is not None:
@@ -190,7 +192,9 @@ class ConceptAgent(BaseAgent):
             location=ctx.get("location"),
         )
 
-        logger.info("ConceptCreativeAgent generating concept board for: %s", vibe_brief[:60])
+        logger.info(
+            "ConceptCreativeAgent generating concept board for: %s", vibe_brief[:60]
+        )
 
         result: ConceptBoard = await self.call_llm_structured(
             prompt=prompt,

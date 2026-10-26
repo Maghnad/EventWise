@@ -15,6 +15,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
+from app.users.router import limiter
 
 # In-memory async SQLite engine for fast, isolated tests
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -31,8 +32,6 @@ TestingSessionLocal = async_sessionmaker(
     expire_on_commit=False,
 )
 
-from app.users.router import limiter
-
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 def disable_rate_limits_for_tests():
@@ -40,7 +39,6 @@ def disable_rate_limits_for_tests():
     limiter.enabled = False
     yield
     limiter.enabled = True
-
 
 
 @pytest_asyncio.fixture(scope="function")

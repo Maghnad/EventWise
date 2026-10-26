@@ -69,12 +69,8 @@ class TimelineTaskItem(BaseModel):
 class TimelinePlanResponse(BaseModel):
     """Structured response wrapping a complete reverse-engineered timeline."""
 
-    event_type: str = Field(
-        ..., description="Echo of the input event type."
-    )
-    event_date: str = Field(
-        ..., description="Echo of the event date (ISO format)."
-    )
+    event_type: str = Field(..., description="Echo of the input event type.")
+    event_date: str = Field(..., description="Echo of the event date (ISO format).")
     total_planning_days: int = Field(
         ...,
         description="Total number of days the planning timeline spans.",
@@ -215,13 +211,9 @@ class TimelineAgent(BaseAgent):
                 "event_type, event_date."
             )
 
-        missing = [
-            k for k in ("event_type", "event_date") if k not in context
-        ]
+        missing = [k for k in ("event_type", "event_date") if k not in context]
         if missing:
-            raise ValueError(
-                f"Missing required context keys: {', '.join(missing)}"
-            )
+            raise ValueError(f"Missing required context keys: {', '.join(missing)}")
 
         event_type: str = context["event_type"]
 

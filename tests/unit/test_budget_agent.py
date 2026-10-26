@@ -210,9 +210,7 @@ async def test_prompt_includes_all_inputs() -> None:
         messages = call_kwargs[0][0] if call_kwargs[0] else []
 
     # Find the user message
-    user_msg = next(
-        (m["content"] for m in messages if m["role"] == "user"), ""
-    )
+    user_msg = next((m["content"] for m in messages if m["role"] == "user"), "")
     assert "wedding" in user_msg
     assert "150" in user_msg
     assert "25,000.00" in user_msg
@@ -244,9 +242,7 @@ async def test_additional_input_text_appended_to_prompt() -> None:
     if messages is None:
         messages = call_kwargs[0][0] if call_kwargs[0] else []
 
-    user_msg = next(
-        (m["content"] for m in messages if m["role"] == "user"), ""
-    )
+    user_msg = next((m["content"] for m in messages if m["role"] == "user"), "")
     assert "Prioritise eco-friendly vendors" in user_msg
 
 
@@ -298,7 +294,10 @@ def test_agent_system_prompt_includes_rules() -> None:
     """System prompt contains budgeting rules."""
     agent = BudgetAgent(llm_client=MagicMock(spec=LLMClient))
     assert "sum" in agent.system_prompt.lower()
-    assert "category" in agent.system_prompt.lower() or "categories" in agent.system_prompt.lower()
+    assert (
+        "category" in agent.system_prompt.lower()
+        or "categories" in agent.system_prompt.lower()
+    )
 
 
 # ==============================================================================

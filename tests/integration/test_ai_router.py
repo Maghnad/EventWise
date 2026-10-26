@@ -82,9 +82,17 @@ def _mock_budget() -> BudgetPlanResponse:
         total_budget=Decimal("25000.00"),
         location="Conservatory",
         items=[
-            BudgetAllocation(category="Venue", allocated_amount=Decimal("10000.00"), percentage=40.0),
-            BudgetAllocation(category="Catering", allocated_amount=Decimal("10000.00"), percentage=40.0),
-            BudgetAllocation(category="Decor", allocated_amount=Decimal("5000.00"), percentage=20.0),
+            BudgetAllocation(
+                category="Venue", allocated_amount=Decimal("10000.00"), percentage=40.0
+            ),
+            BudgetAllocation(
+                category="Catering",
+                allocated_amount=Decimal("10000.00"),
+                percentage=40.0,
+            ),
+            BudgetAllocation(
+                category="Decor", allocated_amount=Decimal("5000.00"), percentage=20.0
+            ),
         ],
         summary="Botanical Gala budget.",
     )
@@ -96,8 +104,14 @@ def _mock_timeline() -> TimelinePlanResponse:
         event_date="2026-11-15",
         total_planning_days=90,
         tasks=[
-            TimelineTaskItem(title="Reserve Conservatory", category="Venue", days_before_event=90),
-            TimelineTaskItem(title="Final Lighting Walkthrough", category="Logistics", days_before_event=1),
+            TimelineTaskItem(
+                title="Reserve Conservatory", category="Venue", days_before_event=90
+            ),
+            TimelineTaskItem(
+                title="Final Lighting Walkthrough",
+                category="Logistics",
+                days_before_event=1,
+            ),
         ],
         summary="Gala timeline.",
     )
@@ -109,8 +123,16 @@ def _mock_vendor() -> VendorChecklistResponse:
         total_budget=Decimal("25000.00"),
         vendor_categories_count=2,
         items=[
-            VendorChecklistItem(vendor_category="Venue", task_name="Book Conservatory", booking_lead_time_days=90),
-            VendorChecklistItem(vendor_category="Caterer", task_name="Taste 5-course menu", booking_lead_time_days=60),
+            VendorChecklistItem(
+                vendor_category="Venue",
+                task_name="Book Conservatory",
+                booking_lead_time_days=90,
+            ),
+            VendorChecklistItem(
+                vendor_category="Caterer",
+                task_name="Taste 5-course menu",
+                booking_lead_time_days=60,
+            ),
         ],
         summary="Gala vendor checklist.",
     )
@@ -273,18 +295,38 @@ async def test_generate_plan_endpoint_runs_and_saves_results(
     evt_uuid = UUID(event_id)
 
     budget_items = (
-        await db_session.execute(select(BudgetItemModel).where(BudgetItemModel.event_id == evt_uuid))
-    ).scalars().all()
+        (
+            await db_session.execute(
+                select(BudgetItemModel).where(BudgetItemModel.event_id == evt_uuid)
+            )
+        )
+        .scalars()
+        .all()
+    )
     assert len(budget_items) == 3
 
     timeline_tasks = (
-        await db_session.execute(select(TimelineTaskModel).where(TimelineTaskModel.event_id == evt_uuid))
-    ).scalars().all()
+        (
+            await db_session.execute(
+                select(TimelineTaskModel).where(TimelineTaskModel.event_id == evt_uuid)
+            )
+        )
+        .scalars()
+        .all()
+    )
     assert len(timeline_tasks) == 2
 
     vendor_items = (
-        await db_session.execute(select(VendorChecklistItemModel).where(VendorChecklistItemModel.event_id == evt_uuid))
-    ).scalars().all()
+        (
+            await db_session.execute(
+                select(VendorChecklistItemModel).where(
+                    VendorChecklistItemModel.event_id == evt_uuid
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
     assert len(vendor_items) == 2
 
 
@@ -296,7 +338,9 @@ async def test_generate_concept_endpoint(
     """POST /events/{id}/concept returns structured ConceptBoard."""
     headers, event_id = auth_user_and_event
 
-    with patch("app.ai.router.ConceptAgent.run", new_callable=AsyncMock) as mock_concept_run:
+    with patch(
+        "app.ai.router.ConceptAgent.run", new_callable=AsyncMock
+    ) as mock_concept_run:
         mock_concept_run.return_value = _mock_concept()
 
         response = await async_client.post(
@@ -320,7 +364,9 @@ async def test_generate_moodboard_endpoint(
     """POST /events/{id}/moodboard returns spatial decor list & GenAI visual staging prompts."""
     headers, event_id = auth_user_and_event
 
-    with patch("app.ai.router.MoodboardAgent.run", new_callable=AsyncMock) as mock_mood_run:
+    with patch(
+        "app.ai.router.MoodboardAgent.run", new_callable=AsyncMock
+    ) as mock_mood_run:
         mock_mood_run.return_value = _mock_moodboard()
 
         response = await async_client.post(
@@ -333,7 +379,10 @@ async def test_generate_moodboard_endpoint(
         data = response.json()
         assert len(data["spatial_decor_list"]) == 1
         assert len(data["image_prompts"]) == 1
-        assert "DALL-E" in data["image_prompts"][0]["prompt"] or len(data["image_prompts"][0]["prompt"]) > 10
+        assert (
+            "DALL-E" in data["image_prompts"][0]["prompt"]
+            or len(data["image_prompts"][0]["prompt"]) > 10
+        )
 
 
 @pytest.mark.asyncio
@@ -344,7 +393,9 @@ async def test_generate_ideas_endpoint(
     """POST /events/{id}/ideas returns RAG-assisted personalized ideas."""
     headers, event_id = auth_user_and_event
 
-    with patch("app.ai.router.IdeasAgent.run", new_callable=AsyncMock) as mock_ideas_run:
+    with patch(
+        "app.ai.router.IdeasAgent.run", new_callable=AsyncMock
+    ) as mock_ideas_run:
         mock_ideas_run.return_value = _mock_ideas()
 
         response = await async_client.post(
@@ -399,14 +450,24 @@ async def test_what_if_scenario_simulation_endpoint(
         total_budget=Decimal("30000.00"),
         location="Conservatory",
         items=[
-            BudgetAllocation(category="Venue", allocated_amount=Decimal("12000.00"), percentage=40.0),
-            BudgetAllocation(category="Catering", allocated_amount=Decimal("12000.00"), percentage=40.0),
-            BudgetAllocation(category="Decor", allocated_amount=Decimal("6000.00"), percentage=20.0),
+            BudgetAllocation(
+                category="Venue", allocated_amount=Decimal("12000.00"), percentage=40.0
+            ),
+            BudgetAllocation(
+                category="Catering",
+                allocated_amount=Decimal("12000.00"),
+                percentage=40.0,
+            ),
+            BudgetAllocation(
+                category="Decor", allocated_amount=Decimal("6000.00"), percentage=20.0
+            ),
         ],
         summary="Adjusted scenario budget",
     )
 
-    with patch("app.ai.router.BudgetAgent.run", new_callable=AsyncMock) as mock_budget_run:
+    with patch(
+        "app.ai.router.BudgetAgent.run", new_callable=AsyncMock
+    ) as mock_budget_run:
         mock_budget_run.return_value = scenario_budget_plan
 
         response = await async_client.post(
@@ -496,8 +557,14 @@ async def test_generate_plan_without_saving_to_database(
 
     evt_uuid = UUID(event_id)
     budget_items = (
-        await db_session.execute(select(BudgetItemModel).where(BudgetItemModel.event_id == evt_uuid))
-    ).scalars().all()
+        (
+            await db_session.execute(
+                select(BudgetItemModel).where(BudgetItemModel.event_id == evt_uuid)
+            )
+        )
+        .scalars()
+        .all()
+    )
     # No new items should have been added when save_to_database is False
     assert len(budget_items) == 0
 
@@ -510,21 +577,29 @@ async def test_ai_endpoints_default_payloads(
     """AI endpoints should correctly handle default / empty payload bodies."""
     headers, event_id = auth_user_and_event
 
-    with patch("app.ai.router.ConceptAgent.run", new_callable=AsyncMock) as mock_concept:
+    with patch(
+        "app.ai.router.ConceptAgent.run", new_callable=AsyncMock
+    ) as mock_concept:
         mock_concept.return_value = _mock_concept()
-        res = await async_client.post(f"/events/{event_id}/concept", headers=headers, json={})
+        res = await async_client.post(
+            f"/events/{event_id}/concept", headers=headers, json={}
+        )
         assert res.status_code == 200
         assert res.json()["theme_name"] == "Starlight Botanical Gala"
 
     with patch("app.ai.router.MoodboardAgent.run", new_callable=AsyncMock) as mock_mood:
         mock_mood.return_value = _mock_moodboard()
-        res = await async_client.post(f"/events/{event_id}/moodboard", headers=headers, json={})
+        res = await async_client.post(
+            f"/events/{event_id}/moodboard", headers=headers, json={}
+        )
         assert res.status_code == 200
         assert len(res.json()["spatial_decor_list"]) == 1
 
     with patch("app.ai.router.IdeasAgent.run", new_callable=AsyncMock) as mock_ideas:
         mock_ideas.return_value = _mock_ideas()
-        res = await async_client.post(f"/events/{event_id}/ideas", headers=headers, json={})
+        res = await async_client.post(
+            f"/events/{event_id}/ideas", headers=headers, json={}
+        )
         assert res.status_code == 200
         assert len(res.json()["ideas"]) == 1
 
@@ -543,8 +618,14 @@ async def test_what_if_budget_decrease_scenario(
         total_budget=Decimal("15000.00"),
         location="Conservatory",
         items=[
-            BudgetAllocation(category="Venue", allocated_amount=Decimal("8000.00"), percentage=53.3),
-            BudgetAllocation(category="Catering", allocated_amount=Decimal("7000.00"), percentage=46.7),
+            BudgetAllocation(
+                category="Venue", allocated_amount=Decimal("8000.00"), percentage=53.3
+            ),
+            BudgetAllocation(
+                category="Catering",
+                allocated_amount=Decimal("7000.00"),
+                percentage=46.7,
+            ),
         ],
         summary="Downscaled budget",
     )
@@ -576,9 +657,12 @@ async def test_ai_api_prefix_routes(
     """AI endpoints mapped under `/api/events/...` function identically."""
     headers, event_id = auth_user_and_event
 
-    with patch("app.ai.router.ConceptAgent.run", new_callable=AsyncMock) as mock_concept:
+    with patch(
+        "app.ai.router.ConceptAgent.run", new_callable=AsyncMock
+    ) as mock_concept:
         mock_concept.return_value = _mock_concept()
-        res = await async_client.post(f"/api/events/{event_id}/concept", headers=headers, json={})
+        res = await async_client.post(
+            f"/api/events/{event_id}/concept", headers=headers, json={}
+        )
         assert res.status_code == 200
         assert res.json()["theme_name"] == "Starlight Botanical Gala"
-

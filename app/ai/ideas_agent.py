@@ -141,9 +141,7 @@ class GeneratedIdea(BaseModel):
 class PersonalizedIdeasResponse(BaseModel):
     """Structured response container for brainstormed event ideas."""
 
-    event_type: str = Field(
-        ..., description="Echo of the input event type."
-    )
+    event_type: str = Field(..., description="Echo of the input event type.")
     category: str = Field(
         default="general",
         description="Category focus of the generated brainstorm batch.",
@@ -248,7 +246,9 @@ class IdeasAgent(BaseAgent):
             embedding=embedding,
         )
         await self.vector_store.add_document(doc)
-        logger.info("Indexed vendor '%s' into vector store with %d dims.", name, len(embedding))
+        logger.info(
+            "Indexed vendor '%s' into vector store with %d dims.", name, len(embedding)
+        )
         return doc
 
     async def embed_and_index_event_data(
@@ -326,7 +326,9 @@ class IdeasAgent(BaseAgent):
                 "Incorporate and align the generated ideas with the relevant vendors/resources above."
             )
         else:
-            lines.append("\n(No pre-indexed vendor context found; generate fresh creative concepts.)")
+            lines.append(
+                "\n(No pre-indexed vendor context found; generate fresh creative concepts.)"
+            )
 
         lines.append(
             "\nProduce structured ideas with title, detailed description, category, "
@@ -362,7 +364,11 @@ class IdeasAgent(BaseAgent):
         ctx = context or {}
         event_type = ctx.get("event_type") or "special event"
         category = ctx.get("category")
-        user_prompt = ctx.get("prompt") or input_text or "creative ideas and unique guest experiences"
+        user_prompt = (
+            ctx.get("prompt")
+            or input_text
+            or "creative ideas and unique guest experiences"
+        )
         top_k = int(ctx.get("top_k", 3))
 
         # Retrieve relevant context from vector store

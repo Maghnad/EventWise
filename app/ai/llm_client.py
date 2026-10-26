@@ -87,12 +87,11 @@ class LLMClient:
         self.initial_backoff = initial_backoff_seconds
         self.backoff_multiplier = backoff_multiplier
 
+        self._client: AsyncOpenAI | None = None
         if client is not None:
             self._client = client
         elif self._api_key:
             self._client = AsyncOpenAI(api_key=self._api_key)
-        else:
-            self._client = None
 
     @property
     def client(self) -> AsyncOpenAI:
@@ -136,7 +135,9 @@ class LLMClient:
                 # Let our own error hierarchy (e.g. LLMStructuredOutputError) propagate
                 raise
             except Exception as exc:
-                raise LLMClientError(f"Unexpected error in {operation_name}: {exc}") from exc
+                raise LLMClientError(
+                    f"Unexpected error in {operation_name}: {exc}"
+                ) from exc
 
         raise LLMRetryError(
             f"{operation_name} failed after {self.max_retries + 1} attempts. Last error: {last_exception}"
@@ -180,7 +181,9 @@ class LLMClient:
             content = response.choices[0].message.content
             return content.strip() if content else ""
 
-        return str(await self._execute_with_retry(_call, operation_name="generate_text"))
+        return str(
+            await self._execute_with_retry(_call, operation_name="generate_text")
+        )
 
     async def generate_structured(
         self,
@@ -226,7 +229,9 @@ class LLMClient:
             )
             message = completion.choices[0].message
             if getattr(message, "refusal", None):
-                raise LLMStructuredOutputError(f"Model refused generation: {message.refusal}")
+                raise LLMStructuredOutputError(
+                    f"Model refused generation: {message.refusal}"
+                )
 
             parsed = getattr(message, "parsed", None)
             if parsed is None:
@@ -268,4 +273,3 @@ class LLMClient:
             _call, operation_name=f"create_embedding[{model}]"
         )
         return result  # type: ignore[no-any-return]
-

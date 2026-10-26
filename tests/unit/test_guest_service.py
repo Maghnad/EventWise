@@ -397,7 +397,11 @@ async def test_update_or_upsert_guest_create_and_validation(
         db_session,
         user,
         event.id,
-        UpdateGuestRequest(name="Kelly", email="kelly@example.com", rsvp_status=GuestRsvpStatus.ATTENDING),
+        UpdateGuestRequest(
+            name="Kelly",
+            email="kelly@example.com",
+            rsvp_status=GuestRsvpStatus.ATTENDING,
+        ),
     )
     assert created.full_name == "Kelly"
     assert created.email == "kelly@example.com"
@@ -425,16 +429,22 @@ async def test_delete_guest_by_identifier_scenarios(
     )
 
     # 1. Delete by guest_id
-    del1 = await GuestService.delete_guest_by_identifier(db_session, user, event.id, guest_id=g1.id)
+    del1 = await GuestService.delete_guest_by_identifier(
+        db_session, user, event.id, guest_id=g1.id
+    )
     assert del1.success is True
 
     # 2. Delete by email
-    del2 = await GuestService.delete_guest_by_identifier(db_session, user, event.id, email="mia@example.com")
+    del2 = await GuestService.delete_guest_by_identifier(
+        db_session, user, event.id, email="mia@example.com"
+    )
     assert del2.success is True
 
     # 3. Email not found -> 404
     with pytest.raises(HTTPException) as exc_info:
-        await GuestService.delete_guest_by_identifier(db_session, user, event.id, email="nobody@example.com")
+        await GuestService.delete_guest_by_identifier(
+            db_session, user, event.id, email="nobody@example.com"
+        )
     assert exc_info.value.status_code == 404
 
     # 4. Neither provided -> 400
@@ -485,7 +495,9 @@ async def test_public_event_and_rsvp_submission(
         dietary_restrictions=[],
         notes="Cannot make it unfortunately",
     )
-    rsvp_update = await GuestService.submit_public_rsvp(db_session, event.id, req_update)
+    rsvp_update = await GuestService.submit_public_rsvp(
+        db_session, event.id, req_update
+    )
     assert rsvp_update.success is True
     assert "confirmed as declined" in rsvp_update.message
     assert rsvp_update.guest.rsvp_status == GuestRsvpStatus.DECLINED
@@ -506,32 +518,43 @@ async def test_answer_guest_faq_topics(
     _user, event = user_and_event
 
     # 1. Dress code
-    faq1 = await GuestService.answer_guest_faq(db_session, event.id, "What is the dress code or attire?")
+    faq1 = await GuestService.answer_guest_faq(
+        db_session, event.id, "What is the dress code or attire?"
+    )
     assert "cocktail" in faq1.answer.lower() or "attire" in faq1.answer.lower()
 
     # 2. Location / parking
-    faq2 = await GuestService.answer_guest_faq(db_session, event.id, "Where is the venue and is parking available?")
+    faq2 = await GuestService.answer_guest_faq(
+        db_session, event.id, "Where is the venue and is parking available?"
+    )
     assert "metropolitan club" in faq2.answer.lower()
     assert "parking" in faq2.answer.lower()
 
     # 3. Schedule / timing
-    faq3 = await GuestService.answer_guest_faq(db_session, event.id, "What time does the event start and schedule?")
+    faq3 = await GuestService.answer_guest_faq(
+        db_session, event.id, "What time does the event start and schedule?"
+    )
     assert "scheduled" in faq3.answer.lower() or "time" in faq3.answer.lower()
 
     # 4. Dietary
-    faq4 = await GuestService.answer_guest_faq(db_session, event.id, "Do you have vegan or vegetarian food for allergies?")
+    faq4 = await GuestService.answer_guest_faq(
+        db_session, event.id, "Do you have vegan or vegetarian food for allergies?"
+    )
     assert "dietary" in faq4.answer.lower() or "catering" in faq4.answer.lower()
 
     # 5. Kids / plus-one
-    faq5 = await GuestService.answer_guest_faq(db_session, event.id, "Can I bring my child and plus one guest?")
+    faq5 = await GuestService.answer_guest_faq(
+        db_session, event.id, "Can I bring my child and plus one guest?"
+    )
     assert "plus-one" in faq5.answer.lower() or "headcount" in faq5.answer.lower()
 
     # 6. General question
-    faq6 = await GuestService.answer_guest_faq(db_session, event.id, "Can you tell me about the weather?")
+    faq6 = await GuestService.answer_guest_faq(
+        db_session, event.id, "Can you tell me about the weather?"
+    )
     assert "thanks for inquiring" in faq6.answer.lower()
 
     # 7. Non-existent event -> 404
     with pytest.raises(HTTPException) as exc_info:
         await GuestService.answer_guest_faq(db_session, uuid4(), "Hello?")
     assert exc_info.value.status_code == 404
-

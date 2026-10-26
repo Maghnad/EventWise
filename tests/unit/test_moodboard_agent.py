@@ -241,7 +241,10 @@ def test_agent_name_and_description() -> None:
     """Agent has correct identifier and summary."""
     agent = MoodboardAgent(llm_client=MagicMock(spec=LLMClient))
     assert agent.name == "MoodboardVisualAgent"
-    assert "spatial" in agent.description.lower() or "moodboard" in agent.description.lower()
+    assert (
+        "spatial" in agent.description.lower()
+        or "moodboard" in agent.description.lower()
+    )
 
 
 def test_moodboard_response_requires_non_empty_lists() -> None:

@@ -11,7 +11,7 @@ import re
 
 _SENSITIVE_PATTERNS = [
     re.compile(r'(password["\':\s=]+)[^\s"\'&,]+', re.IGNORECASE),
-    re.compile(r'(bearer\s+)[a-zA-Z0-9_\-\.]+', re.IGNORECASE),
+    re.compile(r"(bearer\s+)[a-zA-Z0-9_\-\.]+", re.IGNORECASE),
     re.compile(r'(token["\':\s=]+)[^\s"\'&,]+', re.IGNORECASE),
     re.compile(r'(secret["\':\s=]+)[^\s"\'&,]+', re.IGNORECASE),
     re.compile(r'(api[_\-]?key["\':\s=]+)[^\s"\'&,]+', re.IGNORECASE),
@@ -27,13 +27,9 @@ class SensitiveDataRedactor(logging.Filter):
                 record.msg = pattern.sub(r"\1[REDACTED]", record.msg)
         if record.args:
             if isinstance(record.args, tuple):
-                record.args = tuple(
-                    self._redact_arg(arg) for arg in record.args
-                )
+                record.args = tuple(self._redact_arg(arg) for arg in record.args)
             elif isinstance(record.args, dict):
-                record.args = {
-                    k: self._redact_arg(v) for k, v in record.args.items()
-                }
+                record.args = {k: self._redact_arg(v) for k, v in record.args.items()}
         return True
 
     @staticmethod

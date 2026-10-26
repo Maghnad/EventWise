@@ -52,18 +52,10 @@ class BudgetAllocation(BaseModel):
 class BudgetPlanResponse(BaseModel):
     """Structured response wrapping a complete budget plan."""
 
-    event_type: str = Field(
-        ..., description="Echo of the input event type."
-    )
-    guest_count: int = Field(
-        ..., description="Echo of the input guest count."
-    )
-    total_budget: Decimal = Field(
-        ..., description="Echo of the total budget."
-    )
-    location: str = Field(
-        ..., description="Echo of the event location."
-    )
+    event_type: str = Field(..., description="Echo of the input event type.")
+    guest_count: int = Field(..., description="Echo of the input guest count.")
+    total_budget: Decimal = Field(..., description="Echo of the total budget.")
+    location: str = Field(..., description="Echo of the event location.")
     items: list[BudgetAllocation] = Field(
         ...,
         description="List of budget allocations that sum to total_budget.",
@@ -191,9 +183,7 @@ class BudgetAgent(BaseAgent):
             if k not in context
         ]
         if missing:
-            raise ValueError(
-                f"Missing required context keys: {', '.join(missing)}"
-            )
+            raise ValueError(f"Missing required context keys: {', '.join(missing)}")
 
         event_type: str = context["event_type"]
         guest_count: int = int(context["guest_count"])
@@ -220,9 +210,7 @@ class BudgetAgent(BaseAgent):
             temperature=0.3,
         )
 
-        logger.info(
-            "BudgetPlannerAgent produced %d budget items.", len(result.items)
-        )
+        logger.info("BudgetPlannerAgent produced %d budget items.", len(result.items))
         return result
 
 

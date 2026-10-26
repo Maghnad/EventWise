@@ -42,7 +42,12 @@ def _mock_chat_turn_response() -> ChatTurnResponse:
         tool_calls_executed=[
             ToolExecutionRecord(
                 tool_name="budget_planner",
-                arguments={"event_type": "wedding", "guest_count": 150, "total_budget": 35000.0, "location": "Austin"},
+                arguments={
+                    "event_type": "wedding",
+                    "guest_count": 150,
+                    "total_budget": 35000.0,
+                    "location": "Austin",
+                },
                 result_summary="Successfully generated budget_planner deliverable.",
                 status="success",
             )
@@ -71,8 +76,13 @@ async def test_chat_agent_generates_conversational_response() -> None:
     agent = ChatAgent(llm_client=mock_llm)
 
     history = [
-        ChatMessage(role="user", content="Hi, I'm planning a wedding in Austin next spring."),
-        ChatMessage(role="assistant", content="Congratulations! How many guests and what budget?"),
+        ChatMessage(
+            role="user", content="Hi, I'm planning a wedding in Austin next spring."
+        ),
+        ChatMessage(
+            role="assistant",
+            content="Congratulations! How many guests and what budget?",
+        ),
     ]
 
     result = await agent.run(
@@ -133,7 +143,11 @@ async def test_chat_agent_invokes_budget_tool() -> None:
             total_budget=Decimal("35000.00"),
             location="Austin",
             items=[
-                BudgetAllocation(category="Venue", allocated_amount=Decimal("12000.00"), percentage=34.3)
+                BudgetAllocation(
+                    category="Venue",
+                    allocated_amount=Decimal("12000.00"),
+                    percentage=34.3,
+                )
             ],
             summary="Austin wedding budget",
         )
@@ -176,7 +190,9 @@ async def test_chat_agent_invokes_timeline_tool() -> None:
             event_date="2026-10-15",
             total_planning_days=120,
             tasks=[
-                TimelineTaskItem(title="Reserve Center", category="Venue", days_before_event=120)
+                TimelineTaskItem(
+                    title="Reserve Center", category="Venue", days_before_event=120
+                )
             ],
         )
     )
@@ -246,7 +262,9 @@ async def test_chat_agent_handles_tool_failure_gracefully() -> None:
     mock_llm.generate_structured = AsyncMock(return_value=mock_reply)
 
     mock_budget_agent = MagicMock(spec=BudgetAgent)
-    mock_budget_agent.run = AsyncMock(side_effect=RuntimeError("Database connection timed out"))
+    mock_budget_agent.run = AsyncMock(
+        side_effect=RuntimeError("Database connection timed out")
+    )
 
     agent = ChatAgent(llm_client=mock_llm, budget_agent=mock_budget_agent)
 
@@ -267,4 +285,6 @@ async def test_chat_agent_handles_tool_failure_gracefully() -> None:
 
     assert len(result.tool_calls_executed) >= 1
     assert result.tool_calls_executed[0].status == "error"
-    assert "Database connection timed out" in result.tool_calls_executed[0].result_summary
+    assert (
+        "Database connection timed out" in result.tool_calls_executed[0].result_summary
+    )

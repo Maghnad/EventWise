@@ -226,7 +226,9 @@ class GuestService:
             email=data.email,
             phone=sanitize_text(data.phone),
             rsvp_status=data.rsvp_status,
-            dietary_restrictions=sanitize_text(data.dietary_restrictions),
+            dietary_restrictions=[
+                sanitize_text(d) or "" for d in (data.dietary_restrictions or [])
+            ],
             plus_ones=data.plus_ones,
             table_number=data.table_number,
             notes=sanitize_text(data.notes),
@@ -452,7 +454,9 @@ class GuestService:
             id=event.id,
             title=event.title,
             description=event.description or "",
-            event_type=event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type),
+            event_type=event.event_type.value
+            if hasattr(event.event_type, "value")
+            else str(event.event_type),
             start_date=event.start_date,
             end_date=event.end_date,
             location=event.location or "",
@@ -486,7 +490,9 @@ class GuestService:
 
         raw_name = data.full_name or data.email.split("@")[0].replace(".", " ").title()
         guest_name = sanitize_text(raw_name) or "Guest"
-        safe_dietary = sanitize_text(data.dietary_restrictions)
+        safe_dietary = [
+            sanitize_text(d) or "" for d in (data.dietary_restrictions or [])
+        ]
         safe_notes = sanitize_text(data.notes)
 
         if guest is None:
@@ -505,7 +511,11 @@ class GuestService:
             guest.plus_ones = data.plus_ones
             guest.dietary_restrictions = safe_dietary
             if safe_notes:
-                guest.notes = f"{guest.notes}\n{safe_notes}".strip() if guest.notes else safe_notes
+                guest.notes = (
+                    f"{guest.notes}\n{safe_notes}".strip()
+                    if guest.notes
+                    else safe_notes
+                )
             if guest_name:
                 guest.full_name = guest_name
 
@@ -513,7 +523,11 @@ class GuestService:
         await db.refresh(guest)
         await db.commit()
 
-        status_text = "attending" if guest.rsvp_status == GuestRsvpStatus.ATTENDING else "declined"
+        status_text = (
+            "attending"
+            if guest.rsvp_status == GuestRsvpStatus.ATTENDING
+            else "declined"
+        )
         return RsvpSubmissionResponse(
             success=True,
             message=f"Thank you! Your RSVP has been confirmed as {status_text}.",
@@ -532,7 +546,9 @@ class GuestService:
         result = await db.execute(stmt)
         event = result.scalar_one_or_none()
         if event is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found.")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Event not found."
+            )
 
         q = question.lower()
         title = event.title
@@ -545,13 +561,40 @@ class GuestService:
 
         if any(w in q for w in ["dress", "attire", "wear", "code", "outfit"]):
             answer = f"The recommended attire for {title} is cocktail / semi-formal, suited for a {event.event_type.value if hasattr(event.event_type, 'value') else event.event_type} gathering."
-        elif any(w in q for w in ["where", "location", "address", "venue", "place", "park", "parking"]):
+        elif any(
+            w in q
+            for w in [
+                "where",
+                "location",
+                "address",
+                "venue",
+                "place",
+                "park",
+                "parking",
+            ]
+        ):
             answer = f"{title} takes place at {loc}. Designated guest parking and drop-off zones are available near the entrance."
         elif any(w in q for w in ["when", "time", "date", "start", "schedule", "hour"]):
             answer = f"{title} is scheduled for {start_str}. We recommend arriving 15 minutes prior to start time."
-        elif any(w in q for w in ["diet", "food", "vegan", "vegetarian", "allergy", "gluten", "halal", "kosher", "menu"]):
+        elif any(
+            w in q
+            for w in [
+                "diet",
+                "food",
+                "vegan",
+                "vegetarian",
+                "allergy",
+                "gluten",
+                "halal",
+                "kosher",
+                "menu",
+            ]
+        ):
             answer = "All special dietary requirements and food allergies are accommodated by catering! Please list your dietary restrictions when submitting your RSVP."
-        elif any(w in q for w in ["kid", "child", "children", "baby", "plus one", "guest", "invite"]):
+        elif any(
+            w in q
+            for w in ["kid", "child", "children", "baby", "plus one", "guest", "invite"]
+        ):
             answer = "Please refer to your RSVP form for your allocated plus-one headcount. Feel free to leave a note on your RSVP for any additional family inquiries."
         else:
             answer = f"Thanks for inquiring about {title}! The event is taking place at {loc} on {start_str}. If you have special questions, leave a note with your RSVP or reach out to the event host."

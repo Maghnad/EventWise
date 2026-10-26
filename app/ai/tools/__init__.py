@@ -82,7 +82,9 @@ class BaseTool(ABC):
             },
         }
         if self.parameters_schema:
-            schema["function"]["parameters"] = self.parameters_schema.model_json_schema()
+            schema["function"]["parameters"] = (
+                self.parameters_schema.model_json_schema()
+            )
         else:
             schema["function"]["parameters"] = {
                 "type": "object",
@@ -106,7 +108,9 @@ class FunctionTool(BaseTool):
         func: Callable[..., Any | Awaitable[Any]],
         parameters_schema: type[BaseModel] | None = None,
     ) -> None:
-        super().__init__(name=name, description=description, parameters_schema=parameters_schema)
+        super().__init__(
+            name=name, description=description, parameters_schema=parameters_schema
+        )
         self._func = func
 
     async def execute(self, **kwargs: Any) -> Any:
@@ -122,7 +126,9 @@ class FunctionTool(BaseTool):
                 return await self._func(**call_args)
             return self._func(**call_args)
         except Exception as exc:
-            raise ToolExecutionError(f"Error executing tool '{self.name}': {exc}") from exc
+            raise ToolExecutionError(
+                f"Error executing tool '{self.name}': {exc}"
+            ) from exc
 
 
 # ==============================================================================

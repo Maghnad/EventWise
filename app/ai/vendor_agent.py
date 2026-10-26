@@ -49,8 +49,7 @@ class VendorChecklistItem(BaseModel):
     estimated_budget_range: str = Field(
         default="",
         description=(
-            "Rough budget range for this vendor category "
-            "(e.g. '$2,000 - $4,000')."
+            "Rough budget range for this vendor category (e.g. '$2,000 - $4,000')."
         ),
     )
     questions_to_ask: list[str] = Field(
@@ -67,12 +66,8 @@ class VendorChecklistItem(BaseModel):
 class VendorChecklistResponse(BaseModel):
     """Structured response wrapping a complete vendor checklist."""
 
-    event_type: str = Field(
-        ..., description="Echo of the input event type."
-    )
-    total_budget: Decimal = Field(
-        ..., description="Echo of the total event budget."
-    )
+    event_type: str = Field(..., description="Echo of the input event type.")
+    total_budget: Decimal = Field(..., description="Echo of the total event budget.")
     vendor_categories_count: int = Field(
         ...,
         description="Number of distinct vendor categories covered.",
@@ -209,13 +204,9 @@ class VendorAgent(BaseAgent):
                 "event_type, total_budget."
             )
 
-        missing = [
-            k for k in ("event_type", "total_budget") if k not in context
-        ]
+        missing = [k for k in ("event_type", "total_budget") if k not in context]
         if missing:
-            raise ValueError(
-                f"Missing required context keys: {', '.join(missing)}"
-            )
+            raise ValueError(f"Missing required context keys: {', '.join(missing)}")
 
         event_type: str = context["event_type"]
         total_budget = Decimal(str(context["total_budget"]))

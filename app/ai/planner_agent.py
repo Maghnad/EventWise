@@ -61,8 +61,12 @@ class FullEventPlanResponse(BaseModel):
     event_type: str = Field(..., description="Event type.")
     concept: ConceptBoard = Field(..., description="Aesthetic concept and mood.")
     budget: BudgetPlanResponse = Field(..., description="Itemized budget allocation.")
-    timeline: TimelinePlanResponse = Field(..., description="Reverse-engineered milestone schedule.")
-    vendor: VendorChecklistResponse = Field(..., description="Categorized vendor tasks & questions.")
+    timeline: TimelinePlanResponse = Field(
+        ..., description="Reverse-engineered milestone schedule."
+    )
+    vendor: VendorChecklistResponse = Field(
+        ..., description="Categorized vendor tasks & questions."
+    )
     plan_summary: str = Field(
         default="",
         description="Executive summary harmonizing all 4 planning dimensions.",
@@ -95,7 +99,9 @@ class PlannerAgent(BaseAgent):
 
         self.concept_agent = concept_agent or ConceptAgent(llm_client=self.llm_client)
         self.budget_agent = budget_agent or BudgetAgent(llm_client=self.llm_client)
-        self.timeline_agent = timeline_agent or TimelineAgent(llm_client=self.llm_client)
+        self.timeline_agent = timeline_agent or TimelineAgent(
+            llm_client=self.llm_client
+        )
         self.vendor_agent = vendor_agent or VendorAgent(llm_client=self.llm_client)
 
         self.graph = self._build_graph()
@@ -105,7 +111,10 @@ class PlannerAgent(BaseAgent):
 
         async def concept_node(state: PlannerState) -> dict[str, Any]:
             logger.info("LangGraph [1/4]: Generating event concept...")
-            brief = state.get("vibe_brief") or f"{state.get('event_type')} for {state.get('guest_count')} guests"
+            brief = (
+                state.get("vibe_brief")
+                or f"{state.get('event_type')} for {state.get('guest_count')} guests"
+            )
             concept_res: ConceptBoard = await self.concept_agent.run(
                 input_text=brief,
                 context={
@@ -119,13 +128,15 @@ class PlannerAgent(BaseAgent):
             return {"concept": concept_res.model_dump()}
 
         async def budget_node(state: PlannerState) -> dict[str, Any]:
-            logger.info("LangGraph [2/4]: Generating budget allocation...")
             concept_theme = ""
-            if state.get("concept"):
-                concept_theme = state["concept"].get("theme_name", "")
+            concept = state.get("concept")
+            if isinstance(concept, dict):
+                concept_theme = str(concept.get("theme_name", ""))
 
             budget_res: BudgetPlanResponse = await self.budget_agent.run(
-                input_text=f"Align with concept theme: {concept_theme}" if concept_theme else "",
+                input_text=f"Align with concept theme: {concept_theme}"
+                if concept_theme
+                else "",
                 context={
                     "event_type": state.get("event_type"),
                     "guest_count": state.get("guest_count"),

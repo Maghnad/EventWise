@@ -320,9 +320,9 @@ class EventService:
         event = await cls._get_event_or_404(db, event_id, user.id)
 
         event.title = sanitize_text(data.title) or data.title
-        event.description = sanitize_text(data.description)
+        event.description = sanitize_text(data.description) or ""
         event.event_type = data.event_type
-        event.location = sanitize_text(data.location)
+        event.location = sanitize_text(data.location) or ""
         event.start_date = data.start_date
         event.end_date = data.end_date
         event.estimated_guest_count = data.estimated_guest_count

@@ -6,16 +6,23 @@ and protected profile retrieval. Protected with slowapi rate limiting.
 
 from __future__ import annotations
 
+# ==============================================================================
+# Router & Rate Limiter Configuration
+# ==============================================================================
+import os
+import secrets
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+import pyotp
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import get_settings
 from app.database import get_db
 from app.shared.contracts import (
     AuthResponse,
@@ -25,20 +32,22 @@ from app.shared.contracts import (
     TokenRefreshResponse,
 )
 from app.shared.models import User as UserModel
-from app.users.schemas import UserProfileResponse
+from app.users.schemas import (
+    MfaSetupResponse,
+    MfaVerifyRequest,
+    MfaVerifyResponse,
+    UserProfileResponse,
+)
 from app.users.service import UserService
 from app.users.utils import decode_token
 
-# ==============================================================================
-# Router & Rate Limiter Configuration
-# ==============================================================================
-
-import os
-from app.config import get_settings
-
-_settings = get_settings()
+settings = get_settings()
 limiter = Limiter(key_func=get_remote_address)
-if _settings.app_env.lower() == "test" or os.getenv("PYTEST_CURRENT_TEST") or os.getenv("TESTING") == "true":
+if (
+    settings.app_env.lower() == "test"
+    or os.getenv("PYTEST_CURRENT_TEST")
+    or os.getenv("TESTING") == "true"
+):
     limiter.enabled = False
 router = APIRouter(prefix="/auth", tags=["auth"])
 security = HTTPBearer(auto_error=False)
@@ -116,26 +125,6 @@ async def get_current_user(
         )
 
     return user
-
-
-# ==============================================================================
-# Auth Endpoints
-# ==============================================================================
-
-
-import secrets
-from fastapi import Response
-import pyotp
-
-from app.config import get_settings
-from app.users.schemas import (
-    MfaSetupResponse,
-    MfaVerifyRequest,
-    MfaVerifyResponse,
-    UserProfileResponse,
-)
-
-settings = get_settings()
 
 
 # ==============================================================================
@@ -233,7 +222,9 @@ async def refresh_token(
     db: Annotated[AsyncSession, Depends(get_db)] = None,  # type: ignore[assignment]
 ) -> TokenRefreshResponse:
     """Exchange a valid refresh token (from body or HttpOnly cookie) for a newly issued JWT pair."""
-    token_str = (data.refresh_token if data and data.refresh_token else None) or request.cookies.get("refresh_token")
+    token_str = (
+        data.refresh_token if data and data.refresh_token else None
+    ) or request.cookies.get("refresh_token")
     if not token_str:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -327,4 +318,3 @@ async def verify_mfa(
         enabled=True,
         message="Multi-Factor Authentication (MFA) has been successfully verified and activated.",
     )
-

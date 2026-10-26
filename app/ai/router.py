@@ -208,10 +208,14 @@ def _generate_demo_moodboard(concept: str, decor_budget: Decimal) -> MoodboardRe
     )
 
 
-def _generate_demo_ideas(event: EventModel, category: str | None) -> PersonalizedIdeasResponse:
+def _generate_demo_ideas(
+    event: EventModel, category: str | None
+) -> PersonalizedIdeasResponse:
     cat = category or "Creative Ideas"
     return PersonalizedIdeasResponse(
-        event_type=event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type),
+        event_type=event.event_type.value
+        if hasattr(event.event_type, "value")
+        else str(event.event_type),
         category=cat,
         retrieved_context_count=3,
         ideas=[
@@ -264,7 +268,11 @@ def _generate_demo_chat(message: str, event_title: str) -> ChatTurnResponse:
 def _generate_demo_scenario_budget(
     event: EventModel, scenario_budget: Decimal, scenario_guest_count: int
 ) -> BudgetPlanResponse:
-    ev_type = event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type)
+    ev_type = (
+        event.event_type.value
+        if hasattr(event.event_type, "value")
+        else str(event.event_type)
+    )
     return BudgetPlanResponse(
         event_type=ev_type,
         guest_count=scenario_guest_count,
@@ -306,39 +314,106 @@ def _generate_demo_scenario_budget(
     )
 
 
-def _generate_demo_full_plan(event: EventModel, vibe_brief: str) -> FullEventPlanResponse:
+def _generate_demo_full_plan(
+    event: EventModel, vibe_brief: str
+) -> FullEventPlanResponse:
     budget = event.total_budget if event.total_budget > 0 else Decimal("20000.00")
     guests = event.estimated_guest_count if event.estimated_guest_count > 0 else 75
     concept = _generate_demo_concept(vibe_brief, event)
     budget_plan = _generate_demo_scenario_budget(event, budget, guests)
     timeline_plan = TimelinePlanResponse(
-        event_type=event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type),
-        event_date=event.start_date.date().isoformat() if event.start_date else "2026-12-31",
+        event_type=event.event_type.value
+        if hasattr(event.event_type, "value")
+        else str(event.event_type),
+        event_date=event.start_date.date().isoformat()
+        if event.start_date
+        else "2026-12-31",
         total_planning_days=90,
         tasks=[
-            TimelineTaskItem(title="Confirm & Book Venue", category="venue", days_before_event=90, priority="high"),
-            TimelineTaskItem(title="Select Catering Menu", category="catering", days_before_event=60, priority="high"),
-            TimelineTaskItem(title="Finalize Floral & Decor", category="decor", days_before_event=30, priority="medium"),
-            TimelineTaskItem(title="Send Guest Invitations", category="guests", days_before_event=45, priority="high"),
-            TimelineTaskItem(title="Final Walkthrough with Coordinator", category="logistics", days_before_event=7, priority="high"),
+            TimelineTaskItem(
+                title="Confirm & Book Venue",
+                category="venue",
+                days_before_event=90,
+                priority="high",
+            ),
+            TimelineTaskItem(
+                title="Select Catering Menu",
+                category="catering",
+                days_before_event=60,
+                priority="high",
+            ),
+            TimelineTaskItem(
+                title="Finalize Floral & Decor",
+                category="decor",
+                days_before_event=30,
+                priority="medium",
+            ),
+            TimelineTaskItem(
+                title="Send Guest Invitations",
+                category="guests",
+                days_before_event=45,
+                priority="high",
+            ),
+            TimelineTaskItem(
+                title="Final Walkthrough with Coordinator",
+                category="logistics",
+                days_before_event=7,
+                priority="high",
+            ),
         ],
         summary="Sequential planning milestones reverse-scheduled from event date.",
     )
     vendor_plan = VendorChecklistResponse(
-        event_type=event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type),
+        event_type=event.event_type.value
+        if hasattr(event.event_type, "value")
+        else str(event.event_type),
         total_budget=budget,
         vendor_categories_count=4,
         items=[
-            VendorChecklistItem(vendor_category="Venue", task_name="Tour and sign lease contract", booking_lead_time_days=90, questions_to_ask=["What are curfew and noise limits?", "Is outside catering allowed?"]),
-            VendorChecklistItem(vendor_category="Caterer", task_name="Tasting session and dietary signoff", booking_lead_time_days=60, questions_to_ask=["Can you handle vegan/gluten-free?", "Are bar staff included?"]),
-            VendorChecklistItem(vendor_category="Photographer", task_name="Review portfolio and shot list", booking_lead_time_days=75, questions_to_ask=["How many hours of coverage?", "When are digital files delivered?"]),
-            VendorChecklistItem(vendor_category="Florist", task_name="Design moodboard and mock centerpieces", booking_lead_time_days=45, questions_to_ask=["Do you handle teardown?", "Which blooms are in season?"]),
+            VendorChecklistItem(
+                vendor_category="Venue",
+                task_name="Tour and sign lease contract",
+                booking_lead_time_days=90,
+                questions_to_ask=[
+                    "What are curfew and noise limits?",
+                    "Is outside catering allowed?",
+                ],
+            ),
+            VendorChecklistItem(
+                vendor_category="Caterer",
+                task_name="Tasting session and dietary signoff",
+                booking_lead_time_days=60,
+                questions_to_ask=[
+                    "Can you handle vegan/gluten-free?",
+                    "Are bar staff included?",
+                ],
+            ),
+            VendorChecklistItem(
+                vendor_category="Photographer",
+                task_name="Review portfolio and shot list",
+                booking_lead_time_days=75,
+                questions_to_ask=[
+                    "How many hours of coverage?",
+                    "When are digital files delivered?",
+                ],
+            ),
+            VendorChecklistItem(
+                vendor_category="Florist",
+                task_name="Design moodboard and mock centerpieces",
+                booking_lead_time_days=45,
+                questions_to_ask=[
+                    "Do you handle teardown?",
+                    "Which blooms are in season?",
+                ],
+            ),
         ],
         summary="Essential vendor categories and key consultation questions.",
     )
     return FullEventPlanResponse(
         event_id=str(event.id),
-        event_type=event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type),
+        event_type=event.event_type.value
+        if hasattr(event.event_type, "value")
+        else str(event.event_type),
         concept=concept,
         budget=budget_plan,
         timeline=timeline_plan,
@@ -376,8 +451,13 @@ async def generate_plan(
     event = await _get_user_event(db, event_id, current_user.id)
     req = payload or GeneratePlanRequest()
 
-    vibe_brief = req.vibe_brief or f"{event.title}: {event.description or event.event_type.value}"
-    event_date_str = event.start_date.date().isoformat() if event.start_date else "2026-12-31"
+    vibe_brief = (
+        req.vibe_brief
+        or f"{event.title}: {event.description or event.event_type.value}"
+    )
+    event_date_str = (
+        event.start_date.date().isoformat() if event.start_date else "2026-12-31"
+    )
 
     planner = PlannerAgent()
     try:
@@ -385,7 +465,9 @@ async def generate_plan(
             input_text=vibe_brief,
             context={
                 "event_id": str(event.id),
-                "event_type": event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type),
+                "event_type": event.event_type.value
+                if hasattr(event.event_type, "value")
+                else str(event.event_type),
                 "guest_count": event.estimated_guest_count,
                 "total_budget": float(event.total_budget),
                 "location": event.location,
@@ -394,22 +476,24 @@ async def generate_plan(
             },
         )
     except (LLMConfigurationError, LLMClientError) as exc:
-        logger.warning("OpenAI API call failed (%s). Serving high-quality demo fallback.", exc)
+        logger.warning(
+            "OpenAI API call failed (%s). Serving high-quality demo fallback.", exc
+        )
         plan = _generate_demo_full_plan(event, vibe_brief)
 
     # Persist generated plan results to database
     if req.save_to_database:
         # 1. Save Budget Items
-        for item in plan.budget.items:
+        for budget_item in plan.budget.items:
             db_item = BudgetItemModel(
                 event_id=event.id,
-                category=item.category,
-                name=f"{item.category} Allocation",
-                estimated_cost=item.allocated_amount,
+                category=budget_item.category,
+                name=f"{budget_item.category} Allocation",
+                estimated_cost=budget_item.allocated_amount,
                 actual_cost=None,
                 paid_amount=Decimal("0.00"),
                 status=BudgetItemStatus.PLANNED,
-                notes=item.notes or f"Allocated: {item.percentage}%",
+                notes=budget_item.notes or f"Allocated: {budget_item.percentage}%",
             )
             db.add(db_item)
 
@@ -420,7 +504,8 @@ async def generate_plan(
             db_task = TimelineTaskModel(
                 event_id=event.id,
                 title=task.title,
-                description=task.description or f"Category: {task.category}, Priority: {task.priority}",
+                description=task.description
+                or f"Category: {task.category}, Priority: {task.priority}",
                 start_time=due,
                 end_time=due + timedelta(hours=task.estimated_duration_hours or 1.0),
                 status=TaskStatus.PENDING,
@@ -430,20 +515,20 @@ async def generate_plan(
             db.add(db_task)
 
         # 3. Save Vendor Checklist Items
-        for item in plan.vendor.items:
-            due = event_base_time - timedelta(days=item.booking_lead_time_days)
+        for vendor_item in plan.vendor.items:
+            due = event_base_time - timedelta(days=vendor_item.booking_lead_time_days)
             notes_parts = []
-            if item.estimated_budget_range:
-                notes_parts.append(f"Range: {item.estimated_budget_range}")
-            if item.questions_to_ask:
-                notes_parts.append(f"Questions: {'; '.join(item.questions_to_ask)}")
-            if item.description:
-                notes_parts.append(item.description)
+            if vendor_item.estimated_budget_range:
+                notes_parts.append(f"Range: {vendor_item.estimated_budget_range}")
+            if vendor_item.questions_to_ask:
+                notes_parts.append(f"Questions: {'; '.join(vendor_item.questions_to_ask)}")
+            if vendor_item.description:
+                notes_parts.append(vendor_item.description)
 
             db_vendor_task = VendorChecklistItemModel(
                 event_id=event.id,
-                vendor_category=item.vendor_category,
-                task_name=item.task_name,
+                vendor_category=vendor_item.vendor_category,
+                task_name=vendor_item.task_name,
                 is_completed=False,
                 due_date=due,
                 notes=" | ".join(notes_parts),
@@ -485,7 +570,10 @@ async def generate_concept(
     event = await _get_user_event(db, event_id, current_user.id)
     req = payload or GenerateConceptRequest()
 
-    brief = req.vibe_brief or f"{event.title} - {event.description or event.location} ({event.event_type})"
+    brief = (
+        req.vibe_brief
+        or f"{event.title} - {event.description or event.location} ({event.event_type})"
+    )
 
     agent = ConceptAgent()
     try:
@@ -493,14 +581,19 @@ async def generate_concept(
             input_text=brief,
             context={
                 "vibe_brief": brief,
-                "event_type": event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type),
+                "event_type": event.event_type.value
+                if hasattr(event.event_type, "value")
+                else str(event.event_type),
                 "guest_count": event.estimated_guest_count,
                 "total_budget": str(event.total_budget),
                 "location": event.location,
             },
         )
     except Exception as exc:
-        logger.warning("OpenAI API call failed (%s). Serving high-quality aesthetic demo concept.", exc)
+        logger.warning(
+            "OpenAI API call failed (%s). Serving high-quality aesthetic demo concept.",
+            exc,
+        )
         return _generate_demo_concept(brief, event)
 
 
@@ -535,7 +628,7 @@ async def generate_moodboard(
 
     desc_part = event.description or event.location or "Celebration"
     concept = req.concept or f"{event.title} - {desc_part}"
-    
+
     if req.decor_budget is not None and req.decor_budget > 0:
         decor_budget = req.decor_budget
     elif event.total_budget and event.total_budget > 0:
@@ -555,7 +648,10 @@ async def generate_moodboard(
             },
         )
     except Exception as exc:
-        logger.warning("Moodboard generation call failed (%s). Serving high-quality demo moodboard.", exc)
+        logger.warning(
+            "Moodboard generation call failed (%s). Serving high-quality demo moodboard.",
+            exc,
+        )
         return _generate_demo_moodboard(concept, decor_budget)
 
 
@@ -589,7 +685,11 @@ async def generate_ideas(
     req = payload or GenerateIdeasRequest()
 
     prompt = req.prompt or f"creative ideas for {event.title}"
-    event_type = event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type)
+    event_type = (
+        event.event_type.value
+        if hasattr(event.event_type, "value")
+        else str(event.event_type)
+    )
 
     agent = IdeasAgent()
     try:
@@ -605,7 +705,9 @@ async def generate_ideas(
             },
         )
     except (LLMConfigurationError, LLMClientError) as exc:
-        logger.warning("OpenAI API call failed (%s). Serving high-quality demo ideas.", exc)
+        logger.warning(
+            "OpenAI API call failed (%s). Serving high-quality demo ideas.", exc
+        )
         return _generate_demo_ideas(event, req.category)
 
 
@@ -647,7 +749,9 @@ async def chat_with_agent(
                 "event_context": {
                     "event_id": str(event.id),
                     "title": event.title,
-                    "event_type": event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type),
+                    "event_type": event.event_type.value
+                    if hasattr(event.event_type, "value")
+                    else str(event.event_type),
                     "guest_count": event.estimated_guest_count,
                     "total_budget": float(event.total_budget),
                     "location": event.location,
@@ -655,7 +759,9 @@ async def chat_with_agent(
             },
         )
     except (LLMConfigurationError, LLMClientError) as exc:
-        logger.warning("OpenAI API call failed (%s). Serving high-quality demo chat turn.", exc)
+        logger.warning(
+            "OpenAI API call failed (%s). Serving high-quality demo chat turn.", exc
+        )
         return _generate_demo_chat(payload.message, event.title)
 
 
@@ -690,15 +796,28 @@ async def simulate_what_if_scenario(
     baseline_budget = event.total_budget
     baseline_guest_count = event.estimated_guest_count
 
-    scenario_budget = payload.adjusted_budget if payload.adjusted_budget is not None else baseline_budget
-    scenario_guest_count = payload.adjusted_guest_count if payload.adjusted_guest_count is not None else baseline_guest_count
+    scenario_budget = (
+        payload.adjusted_budget
+        if payload.adjusted_budget is not None
+        else baseline_budget
+    )
+    scenario_guest_count = (
+        payload.adjusted_guest_count
+        if payload.adjusted_guest_count is not None
+        else baseline_guest_count
+    )
 
-    event_type_str = event.event_type.value if hasattr(event.event_type, "value") else str(event.event_type)
+    event_type_str = (
+        event.event_type.value
+        if hasattr(event.event_type, "value")
+        else str(event.event_type)
+    )
 
     agent = BudgetAgent()
     try:
         plan: BudgetPlanResponse = await agent.run(
-            input_text=payload.vibe_adjustment or f"Scenario simulation for {scenario_guest_count} guests",
+            input_text=payload.vibe_adjustment
+            or f"Scenario simulation for {scenario_guest_count} guests",
             context={
                 "event_type": event_type_str,
                 "guest_count": scenario_guest_count,
@@ -707,14 +826,30 @@ async def simulate_what_if_scenario(
             },
         )
     except (LLMConfigurationError, LLMClientError) as exc:
-        logger.warning("OpenAI API call failed (%s). Serving recomputed demo scenario.", exc)
-        plan = _generate_demo_scenario_budget(event, scenario_budget, scenario_guest_count)
+        logger.warning(
+            "OpenAI API call failed (%s). Serving recomputed demo scenario.", exc
+        )
+        plan = _generate_demo_scenario_budget(
+            event, scenario_budget, scenario_guest_count
+        )
 
-    cost_per_guest_baseline = baseline_budget / baseline_guest_count if baseline_guest_count > 0 else Decimal("0.00")
-    cost_per_guest_scenario = scenario_budget / scenario_guest_count if scenario_guest_count > 0 else Decimal("0.00")
+    cost_per_guest_baseline = (
+        baseline_budget / baseline_guest_count
+        if baseline_guest_count > 0
+        else Decimal("0.00")
+    )
+    cost_per_guest_scenario = (
+        scenario_budget / scenario_guest_count
+        if scenario_guest_count > 0
+        else Decimal("0.00")
+    )
     budget_variance = scenario_budget - baseline_budget
 
-    delta_budget_str = f"+${budget_variance:,.2f}" if budget_variance >= 0 else f"-${abs(budget_variance):,.2f}"
+    delta_budget_str = (
+        f"+${budget_variance:,.2f}"
+        if budget_variance >= 0
+        else f"-${abs(budget_variance):,.2f}"
+    )
     delta_guests = scenario_guest_count - baseline_guest_count
     delta_guests_str = f"+{delta_guests}" if delta_guests >= 0 else str(delta_guests)
 

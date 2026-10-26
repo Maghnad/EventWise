@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -41,13 +42,12 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5173",
     ]
 
-    from pydantic import field_validator, model_validator
-
     @field_validator("cors_origins", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: str | list[str]) -> list[str]:
         if isinstance(v, str):
             import json
+
             v_stripped = v.strip()
             if v_stripped.startswith("[") and v_stripped.endswith("]"):
                 try:
@@ -63,7 +63,10 @@ class Settings(BaseSettings):
     def validate_production_security(self) -> Settings:
         """Fail fast in production if security configurations are insecure."""
         if self.app_env.lower() in ("production", "prod"):
-            if self.jwt_secret in ("change-me", "secret", "default", "") or len(self.jwt_secret) < 32:
+            if (
+                self.jwt_secret in ("change-me", "secret", "default", "")
+                or len(self.jwt_secret) < 32
+            ):
                 raise ValueError(
                     "FATAL SECURITY CONFIGURATION: In production mode, JWT_SECRET must be at least "
                     "32 characters long and cannot use default/weak placeholders."
@@ -79,4 +82,3 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Return a cached ``Settings`` instance (singleton)."""
     return Settings()
-

@@ -30,7 +30,9 @@ logger = logging.getLogger(__name__)
 class ChatMessage(BaseModel):
     """A turn in the conversation history."""
 
-    role: str = Field(..., description="Role of the speaker: 'user', 'assistant', or 'system'.")
+    role: str = Field(
+        ..., description="Role of the speaker: 'user', 'assistant', or 'system'."
+    )
     content: str = Field(..., description="Text content of the message.")
 
 
@@ -38,8 +40,12 @@ class ToolExecutionRecord(BaseModel):
     """Audit record of a tool invoked during the chat interaction."""
 
     tool_name: str = Field(..., description="Name of the invoked tool.")
-    arguments: dict[str, Any] = Field(default_factory=dict, description="Arguments provided to the tool.")
-    result_summary: str = Field(..., description="High-level summary of the tool outcome.")
+    arguments: dict[str, Any] = Field(
+        default_factory=dict, description="Arguments provided to the tool."
+    )
+    result_summary: str = Field(
+        ..., description="High-level summary of the tool outcome."
+    )
     status: str = Field(default="success", description="Status: 'success' or 'error'.")
 
 
@@ -81,7 +87,9 @@ class BudgetToolInput(BaseModel):
 class TimelineToolInput(BaseModel):
     """Inputs for reverse-engineering an event countdown timeline."""
 
-    event_type: str = Field(..., description="Event type (e.g. 'conference', 'wedding').")
+    event_type: str = Field(
+        ..., description="Event type (e.g. 'conference', 'wedding')."
+    )
     event_date: str = Field(..., description="Target event date (YYYY-MM-DD).")
     guest_count: int | None = Field(default=None, description="Optional guest count.")
 
@@ -89,7 +97,9 @@ class TimelineToolInput(BaseModel):
 class VendorToolInput(BaseModel):
     """Inputs for creating a categorized vendor checklist."""
 
-    event_type: str = Field(..., description="Event type (e.g. 'corporate dinner', 'wedding').")
+    event_type: str = Field(
+        ..., description="Event type (e.g. 'corporate dinner', 'wedding')."
+    )
     total_budget: float = Field(..., description="Total budget in dollars.")
     guest_count: int | None = Field(default=None, description="Optional guest count.")
 
@@ -141,7 +151,9 @@ class ChatAgent(BaseAgent):
         )
 
         self.budget_agent = budget_agent or BudgetAgent(llm_client=self.llm_client)
-        self.timeline_agent = timeline_agent or TimelineAgent(llm_client=self.llm_client)
+        self.timeline_agent = timeline_agent or TimelineAgent(
+            llm_client=self.llm_client
+        )
         self.vendor_agent = vendor_agent or VendorAgent(llm_client=self.llm_client)
 
         self._register_default_tools()
@@ -279,7 +291,11 @@ class ChatAgent(BaseAgent):
                 try:
                     logger.info("ChatConciergeAgent executing tool: %s", tool_name)
                     tool_result = await self.execute_tool(tool_name, **tool_args)
-                    plan_data = tool_result if isinstance(tool_result, dict) else {"result": tool_result}
+                    plan_data = (
+                        tool_result
+                        if isinstance(tool_result, dict)
+                        else {"result": tool_result}
+                    )
                     tool_records.append(
                         ToolExecutionRecord(
                             tool_name=tool_name,

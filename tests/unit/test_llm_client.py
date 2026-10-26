@@ -97,7 +97,9 @@ async def test_generate_text_success() -> None:
 @pytest.mark.asyncio
 async def test_generate_structured_success() -> None:
     """Verify generate_structured calls beta.chat.completions.parse and returns Pydantic instance."""
-    expected_plan = EventPlan(title="Gala 2026", estimated_budget=15000.0, theme="Starry Night")
+    expected_plan = EventPlan(
+        title="Gala 2026", estimated_budget=15000.0, theme="Starry Night"
+    )
     mock_choice = MagicMock()
     mock_choice.message.refusal = None
     mock_choice.message.parsed = expected_plan
@@ -164,7 +166,9 @@ async def test_retry_logic_succeeds_after_transient_error() -> None:
     mock_success = MagicMock(choices=[mock_choice])
 
     mock_openai = MagicMock()
-    mock_openai.chat.completions.create = AsyncMock(side_effect=[mock_rate_limit, mock_success])
+    mock_openai.chat.completions.create = AsyncMock(
+        side_effect=[mock_rate_limit, mock_success]
+    )
 
     client = LLMClient(
         client=mock_openai,
@@ -236,7 +240,9 @@ async def test_agent_execution_and_tool_invocation() -> None:
     mock_openai = MagicMock()
     mock_choice = MagicMock()
     mock_choice.message.content = "Planned successfully"
-    mock_openai.chat.completions.create = AsyncMock(return_value=MagicMock(choices=[mock_choice]))
+    mock_openai.chat.completions.create = AsyncMock(
+        return_value=MagicMock(choices=[mock_choice])
+    )
 
     client = LLMClient(client=mock_openai)
     agent = SamplePlannerAgent(
@@ -247,7 +253,11 @@ async def test_agent_execution_and_tool_invocation() -> None:
     )
 
     # Register tool using decorator
-    @tool(name="multiply", description="Multiply two numbers", parameters_schema=CalculationParams)
+    @tool(
+        name="multiply",
+        description="Multiply two numbers",
+        parameters_schema=CalculationParams,
+    )
     def multiply_numbers(x: int, y: int) -> int:
         return x * y
 
@@ -279,7 +289,11 @@ def test_tool_registry_to_openai_tools() -> None:
     """Verify tool definitions convert to OpenAI function tool schemas."""
     registry = ToolRegistry()
 
-    @tool(name="calculate_tax", description="Calculate tax amount", parameters_schema=CalculationParams)
+    @tool(
+        name="calculate_tax",
+        description="Calculate tax amount",
+        parameters_schema=CalculationParams,
+    )
     def calc_tax(x: int, y: int) -> int:
         return x + y
 

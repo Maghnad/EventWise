@@ -64,7 +64,9 @@ def _mock_budget() -> BudgetPlanResponse:
                 category="Venue", allocated_amount=Decimal("8000.00"), percentage=40.0
             ),
             BudgetAllocation(
-                category="Catering", allocated_amount=Decimal("7000.00"), percentage=35.0
+                category="Catering",
+                allocated_amount=Decimal("7000.00"),
+                percentage=35.0,
             ),
             BudgetAllocation(
                 category="Floral", allocated_amount=Decimal("5000.00"), percentage=25.0
@@ -80,8 +82,12 @@ def _mock_timeline() -> TimelinePlanResponse:
         event_date="2026-10-10",
         total_planning_days=90,
         tasks=[
-            TimelineTaskItem(title="Book Garden", category="Venue", days_before_event=90),
-            TimelineTaskItem(title="Day of Setup", category="Logistics", days_before_event=0),
+            TimelineTaskItem(
+                title="Book Garden", category="Venue", days_before_event=90
+            ),
+            TimelineTaskItem(
+                title="Day of Setup", category="Logistics", days_before_event=0
+            ),
         ],
         summary="90-day countdown timeline.",
     )

@@ -208,7 +208,5 @@ def test_concept_board_validates_min_lengths() -> None:
             ],
             decor_motifs=["Glass"],
             layout_ideas=["Single long table"],
-            high_level_schedule=[
-                ScheduleMilestone(phase="18:00", activity="Dinner")
-            ],
+            high_level_schedule=[ScheduleMilestone(phase="18:00", activity="Dinner")],
         )
