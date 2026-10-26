@@ -31,21 +31,32 @@ export interface ApiRequestOptions extends Omit<RequestInit, "body"> {
 
 /**
  * Resolve the API base URL.
- * Prefers NEXT_PUBLIC_API_BASE_URL from environment. If running on Vercel
- * and unset, falls back directly to the production Render backend URL.
+ *
+ * Priority:
+ * 1. NEXT_PUBLIC_API_BASE_URL env var (build-time, set in Vercel dashboard)
+ * 2. If running in the browser on localhost → local backend
+ * 3. Everything else (Vercel, custom domain, preview) → production Render URL
  */
 export function getBaseUrl(): string {
+  // 1. Explicit env var always wins (set in Vercel dashboard or .env.local)
   const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (envUrl && envUrl.trim() !== "") {
     return envUrl.trim();
   }
-  if (typeof window !== "undefined") {
-    const host = window.location.hostname;
-    if (host.includes("vercel.app") || host.includes("event-wise")) {
-      return "https://eventwise.onrender.com";
-    }
+
+  // 2. Server-side (SSR / build) → production backend
+  if (typeof window === "undefined") {
+    return "https://eventwise.onrender.com";
   }
-  return "http://localhost:8000";
+
+  // 3. Browser: only use localhost when actually developing locally
+  const host = window.location.hostname;
+  if (host === "localhost" || host === "127.0.0.1") {
+    return "http://localhost:8000";
+  }
+
+  // 4. Any deployed host → production backend
+  return "https://eventwise.onrender.com";
 }
 
 /**
