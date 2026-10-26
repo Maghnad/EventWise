@@ -6,7 +6,7 @@ and inline event handlers from all user-submitted text fields before persistence
 
 from __future__ import annotations
 
-import bleach
+import bleach  # type: ignore[import-untyped]
 
 
 def sanitize_text(value: str | None) -> str | None:
