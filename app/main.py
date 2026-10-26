@@ -180,7 +180,19 @@ app.include_router(guests_router)
 app.include_router(ai_router)
 
 
-# ── Health check ────────────────────────────────────────
+# ── Root & Health check ─────────────────────────────────
+@app.get("/", tags=["system"])
+async def root() -> dict[str, Any]:
+    """Return API metadata and status."""
+    return {
+        "service": "EventWise API",
+        "status": "online",
+        "version": "0.1.0",
+        "docs": "/docs",
+        "health": "/health",
+    }
+
+
 @app.get("/health", tags=["system"])
 async def health_check() -> dict[str, Any]:
     """Return basic service health information."""
