@@ -26,17 +26,17 @@ const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value:
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' http://localhost:8000 https://*; frame-ancestors 'none';",
+      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' http://localhost:8000 https://eventwise.onrender.com https://*; frame-ancestors 'none';",
   },
 ];
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /* ── Environment ──────────────────────────────────── */
-  env: {
-    NEXT_PUBLIC_API_BASE_URL:
-      process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000",
-  },
+  /* NEXT_PUBLIC_API_BASE_URL is resolved at runtime by src/services/api.ts
+     via getBaseUrl(). Do NOT hardcode a fallback here — the build-time
+     substitution would bake "http://localhost:8000" into the client
+     bundle whenever the Vercel env var is not yet set. */
 
   /* ── Security: Disable Source Maps in Production ──── */
   productionBrowserSourceMaps: false,
