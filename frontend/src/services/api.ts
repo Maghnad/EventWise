@@ -29,7 +29,24 @@ export interface ApiRequestOptions extends Omit<RequestInit, "body"> {
 
 /* ── Helpers ────────────────────────────────────────── */
 
-const BASE_URL: string = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+/**
+ * Resolve the API base URL.
+ * Prefers NEXT_PUBLIC_API_BASE_URL from environment. If running on Vercel
+ * and unset, falls back directly to the production Render backend URL.
+ */
+export function getBaseUrl(): string {
+  const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (envUrl && envUrl.trim() !== "") {
+    return envUrl.trim();
+  }
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host.includes("vercel.app") || host.includes("event-wise")) {
+      return "https://eventwise.onrender.com";
+    }
+  }
+  return "http://localhost:8000";
+}
 
 /**
  * Build a full URL from a path and optional query params.
@@ -39,7 +56,7 @@ const BASE_URL: string = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localho
  * @returns       Fully-qualified URL string
  */
 function buildUrl(path: string, params?: Record<string, string>): string {
-  const url = new URL(path, BASE_URL);
+  const url = new URL(path, getBaseUrl());
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.set(key, value);
@@ -151,7 +168,7 @@ export async function api<T>(path: string, options: ApiRequestOptions = {}): Pro
       }
       throw new ApiError(
         0,
-        `Cannot reach backend server at ${BASE_URL}. Please ensure the backend is deployed and running.`,
+        `Cannot reach backend server at ${getBaseUrl()}. Please ensure the backend is deployed and running.`,
       );
     }
     throw err;
