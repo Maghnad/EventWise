@@ -62,7 +62,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         plain_bytes = plain_password.encode("utf-8")
         hash_bytes = hashed_password.encode("utf-8")
         return bcrypt.checkpw(plain_bytes, hash_bytes)
-    except Exception:
+    except (ValueError, TypeError):
         return False
 
 

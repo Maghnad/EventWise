@@ -40,7 +40,7 @@ export interface User {
 export type EventStatus = "draft" | "planning" | "confirmed" | "completed" | "cancelled";
 
 export type EventType =
-  "wedding" | "conference" | "birthday" | "corporate" | "social" | "workshop" | "other";
+  "wedding" | "conference" | "birthday" | "corporate" | "social" | "workshop" | "community" | "other";
 
 export interface Event {
   id: UUIDString;

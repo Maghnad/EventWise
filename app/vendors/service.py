@@ -105,7 +105,7 @@ class VendorChecklistService:
         items_result = await db.execute(items_stmt)
         items = items_result.scalars().all()
 
-        completed_stmt = select(func.count()).where(
+        completed_stmt = select(func.count()).where(  # pylint: disable=not-callable
             VendorChecklistItemModel.event_id == event_id,
             VendorChecklistItemModel.is_completed.is_(True),
         )

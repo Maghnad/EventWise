@@ -27,6 +27,7 @@ from app.ai.budget_agent import BudgetAllocation, BudgetPlanResponse
 from app.ai.chat_agent import ChatTurnResponse, ToolExecutionRecord
 from app.ai.concept_agent import ColorSwatch, ConceptBoard, ScheduleMilestone
 from app.ai.ideas_agent import GeneratedIdea, PersonalizedIdeasResponse
+from app.ai.llm_client import LLMClientError
 from app.ai.moodboard_agent import DalleImagePrompt, MoodboardResponse, SpatialDecorItem
 from app.ai.planner_agent import FullEventPlanResponse
 from app.ai.timeline_agent import TimelinePlanResponse, TimelineTaskItem
@@ -666,3 +667,100 @@ async def test_ai_api_prefix_routes(
         )
         assert res.status_code == 200
         assert res.json()["theme_name"] == "Starlight Botanical Gala"
+
+
+@pytest.mark.asyncio
+async def test_ai_fallback_on_llm_error(
+    async_client: AsyncClient,
+    auth_user_and_event: tuple[dict[str, str], str],
+) -> None:
+    """AI endpoints gracefully return robust demo fallbacks when LLM raises LLMClientError."""
+    headers, event_id = auth_user_and_event
+
+    # 1. generate-plan fallback
+    with patch(
+        "app.ai.router.PlannerAgent.run",
+        side_effect=LLMClientError("Provider timeout"),
+    ):
+        res = await async_client.post(
+            f"/events/{event_id}/generate-plan",
+            headers=headers,
+            json={"vibe_brief": "Romantic wedding", "save_to_database": True},
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert "concept" in data
+        assert "budget" in data
+        assert "timeline" in data
+
+    # 2. what-if fallback
+    with patch(
+        "app.ai.router.BudgetAgent.run",
+        side_effect=LLMClientError("Provider timeout"),
+    ):
+        res = await async_client.post(
+            f"/events/{event_id}/what-if",
+            headers=headers,
+            json={"adjusted_budget": 25000.0, "adjusted_guest_count": 80},
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert "analysis_summary" in data
+        assert "plan" in data
+
+    # 3. concept fallback
+    with patch(
+        "app.ai.router.ConceptAgent.run",
+        side_effect=LLMClientError("Provider timeout"),
+    ):
+        res = await async_client.post(
+            f"/events/{event_id}/concept",
+            headers=headers,
+            json={"vibe_brief": "Rustic celebration"},
+        )
+        assert res.status_code == 200
+        assert "theme_name" in res.json()
+
+    # 4. moodboard fallback
+    with patch(
+        "app.ai.router.MoodboardAgent.run",
+        side_effect=LLMClientError("Provider timeout"),
+    ):
+        res = await async_client.post(
+            f"/events/{event_id}/moodboard",
+            headers=headers,
+            json={"vibe_brief": "Bohemian chic"},
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert "spatial_decor_list" in data
+        assert len(data["spatial_decor_list"]) > 0
+
+    # 5. ideas fallback
+    with patch(
+        "app.ai.router.IdeasAgent.run",
+        side_effect=LLMClientError("Provider timeout"),
+    ):
+        res = await async_client.post(
+            f"/events/{event_id}/ideas",
+            headers=headers,
+            json={"category": "decor"},
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert "ideas" in data
+        assert len(data["ideas"]) > 0
+
+    # 6. chat fallback
+    with patch(
+        "app.ai.router.ChatAgent.run",
+        side_effect=LLMClientError("Provider timeout"),
+    ):
+        res = await async_client.post(
+            f"/events/{event_id}/chat",
+            headers=headers,
+            json={"message": "Suggest three venues"},
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert "reply" in data

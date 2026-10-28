@@ -9,7 +9,6 @@ from __future__ import annotations
 from decimal import Decimal
 from uuid import UUID
 
-from fastapi import HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -35,6 +34,7 @@ from app.shared.models import Event as EventModel
 from app.shared.models import Guest as GuestModel
 from app.shared.models import TimelineTask as TimelineTaskModel
 from app.shared.models import User as UserModel
+from app.shared.queries import get_event_or_404
 
 
 class EventService:
@@ -63,20 +63,7 @@ class EventService:
         Raises:
             HTTPException: 404 if event not found or doesn't belong to user.
         """
-        stmt = select(EventModel).where(
-            EventModel.id == event_id,
-            EventModel.owner_id == owner_id,
-        )
-        result = await db.execute(stmt)
-        event = result.scalar_one_or_none()
-
-        if event is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Event not found.",
-            )
-
-        return event
+        return await get_event_or_404(db, event_id, owner_id)
 
     @staticmethod
     async def _build_budget_summary(

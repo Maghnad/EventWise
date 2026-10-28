@@ -36,7 +36,11 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <div id="main-content" tabIndex={-1} className="outline-none">
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

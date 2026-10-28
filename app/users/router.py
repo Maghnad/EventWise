@@ -145,6 +145,7 @@ async def signup(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> AuthResponse:
     """Register a new user, issue an initial JWT pair, set secure cookies, and return account details."""
+    _ = request
     result = await UserService.signup(db, data)
 
     # Set SameSite=Lax HttpOnly refresh token cookie and non-HttpOnly CSRF cookie
@@ -183,6 +184,7 @@ async def login(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> AuthResponse:
     """Validate credentials and return fresh access/refresh JWT tokens."""
+    _ = request
     result = await UserService.login(db, data)
 
     # Set SameSite=Lax HttpOnly refresh token cookie and non-HttpOnly CSRF cookie

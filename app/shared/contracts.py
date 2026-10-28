@@ -68,6 +68,7 @@ class EventType(str, Enum):
     CORPORATE = "corporate"
     SOCIAL = "social"
     WORKSHOP = "workshop"
+    COMMUNITY = "community"
     OTHER = "other"
 
 

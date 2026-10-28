@@ -22,6 +22,7 @@ export const eventFormSchema = z.object({
     "corporate",
     "social",
     "workshop",
+    "community",
     "other",
   ] as const),
   location: z.string().max(500).optional().default(""),
@@ -59,6 +60,7 @@ const EVENT_TYPES: EventType[] = [
   "corporate",
   "social",
   "workshop",
+  "community",
   "other",
 ];
 const EVENT_STATUSES: EventStatus[] = [
