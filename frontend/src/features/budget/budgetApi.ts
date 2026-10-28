@@ -11,6 +11,8 @@ import type {
   CreateBudgetItemRequest,
   MessageResponse,
   UpdateBudgetItemRequest,
+  WhatIfScenarioRequest,
+  WhatIfScenarioResponse,
 } from "@/shared/contracts";
 
 export async function getBudgetOverview(
@@ -53,9 +55,9 @@ export async function deleteBudgetItem(
 
 export async function simulateWhatIfScenario(
   eventId: string,
-  payload: import("@/shared/contracts").WhatIfScenarioRequest,
-): Promise<import("@/shared/contracts").WhatIfScenarioResponse> {
-  return api<import("@/shared/contracts").WhatIfScenarioResponse>(
+  payload: WhatIfScenarioRequest,
+): Promise<WhatIfScenarioResponse> {
+  return api<WhatIfScenarioResponse>(
     `/api/events/${eventId}/what-if`,
     {
       method: "POST",

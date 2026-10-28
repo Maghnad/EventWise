@@ -13,6 +13,7 @@ from typing import Any
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 
@@ -101,6 +102,10 @@ async def global_exception_handler(_request: Request, exc: Exception) -> JSONRes
     )
 
 
+# ── GZip Response Compression Middleware (Efficiency Boost) ──
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+
 # ── Security Headers ────────────────────────────────────
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
@@ -110,6 +115,9 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+    response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; script-src 'self'; object-src 'none'; frame-ancestors 'none';"
     )

@@ -1,9 +1,9 @@
 # EventWise — Quality & Submission Report
 
-**Date:** October 25, 2026  
+**Date:** October 29, 2026  
 **Status:** Ready for Submission  
-**Total Test Suite:** 266 Tests Passing (228 Backend Pytest + 38 Frontend Vitest)  
-**Overall Backend Coverage:** 93% (All services and agents ≥ 87%)  
+**Total Test Suite:** 278 Tests Passing (240 Backend Pytest + 38 Frontend Vitest)  
+**Overall Backend Coverage:** 91% (All services and agents ≥ 87%)  
 
 ---
 
@@ -49,10 +49,10 @@ Event planning is notoriously stressful, fragmented, and vulnerable to costly mi
 ## 3. Test Coverage Breakdown
 
 ### Backend (`pytest --cov=app tests/`)
-- **Total Tests:** 228 passed in 45.01s
-- **Total Statements:** 2,969
-- **Statements Covered:** 2,751
-- **Overall Coverage:** **93%**
+- **Total Tests:** 240 passed in 44.78s
+- **Total Statements:** 3,195
+- **Statements Covered:** 2,901
+- **Overall Coverage:** **91%**
 
 #### Services & Agents Coverage Summary (Target ≥ 80%)
 

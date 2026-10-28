@@ -23,6 +23,7 @@ from app.budgets.schemas import (
 from app.shared.models import BudgetItem as BudgetItemModel
 from app.shared.models import Event as EventModel
 from app.shared.models import User as UserModel
+from app.shared.queries import get_event_or_404
 
 
 class BudgetService:
@@ -38,32 +39,8 @@ class BudgetService:
         event_id: UUID,
         owner_id: UUID,
     ) -> EventModel:
-        """Ensure the event exists and belongs to the user.
-
-        Args:
-            db: Active async database session.
-            event_id: UUID of the parent event.
-            owner_id: UUID of the authenticated user.
-
-        Returns:
-            The EventModel if found and owned by user.
-
-        Raises:
-            HTTPException: 404 if event not found or not owned by user.
-        """
-        stmt = select(EventModel).where(
-            EventModel.id == event_id,
-            EventModel.owner_id == owner_id,
-        )
-        result = await db.execute(stmt)
-        event = result.scalar_one_or_none()
-
-        if event is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Event not found.",
-            )
-        return event
+        """Ensure the event exists and belongs to the user."""
+        return await get_event_or_404(db, event_id, owner_id)
 
     @staticmethod
     async def _get_budget_item_or_404(

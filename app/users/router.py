@@ -17,7 +17,6 @@ from uuid import UUID
 import pyotp
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -39,7 +38,7 @@ from app.users.schemas import (
     UserProfileResponse,
 )
 from app.users.service import UserService
-from app.users.utils import decode_token
+from app.users.utils import JWTError, decode_token
 
 settings = get_settings()
 limiter = Limiter(key_func=get_remote_address)

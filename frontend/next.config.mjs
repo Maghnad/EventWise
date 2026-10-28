@@ -21,7 +21,15 @@ const securityHeaders = [
   },
   {
     key: "Referrer-Policy",
-    value: "origin-when-cross-origin",
+    value: "strict-origin-when-cross-origin",
+  },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
+  {
+    key: "Cross-Origin-Opener-Policy",
+    value: "same-origin",
   },
   {
     key: "Content-Security-Policy",
@@ -32,27 +40,37 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* ── Environment ──────────────────────────────────── */
-  /* NEXT_PUBLIC_API_BASE_URL is resolved at runtime by src/services/api.ts
-     via getBaseUrl(). Do NOT hardcode a fallback here — the build-time
-     substitution would bake "http://localhost:8000" into the client
-     bundle whenever the Vercel env var is not yet set. */
+  /* ── Performance & Efficiency ──────────────────────── */
+  compress: true,
+  swcMinify: true,
+  reactStrictMode: true,
+  poweredByHeader: false,
 
   /* ── Security: Disable Source Maps in Production ──── */
   productionBrowserSourceMaps: false,
 
-  /* ── Security Headers ──────────────────────────────── */
+  /* ── Security Headers & Asset Caching ──────────────── */
   async headers() {
     return [
       {
         source: "/:path*",
         headers: securityHeaders,
       },
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ];
   },
 
-  /* ── Images ───────────────────────────────────────── */
+  /* ── Images Optimization ──────────────────────────── */
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",

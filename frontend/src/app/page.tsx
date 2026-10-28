@@ -280,7 +280,7 @@ export default function HomePage(): React.JSX.Element {
         </div>
       </header>
 
-      <main>
+      <main id="main-content">
         {/* ── 2. Hero Section ─────────────────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 pb-16 pt-20 text-center sm:pb-24 sm:pt-28">
           {/* Eyebrow Label */}

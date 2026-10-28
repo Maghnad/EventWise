@@ -11,9 +11,19 @@ from typing import Any
 from uuid import UUID
 
 import bcrypt
-from jose import jwt
+import jwt
+from jwt.exceptions import PyJWTError as JWTError
 
 from app.config import get_settings
+
+__all__ = [
+    "JWTError",
+    "create_access_token",
+    "create_refresh_token",
+    "decode_token",
+    "hash_password",
+    "verify_password",
+]
 
 settings = get_settings()
 
@@ -147,7 +157,7 @@ def decode_token(token: str) -> dict[str, Any]:
         options={
             "verify_signature": True,
             "verify_exp": True,
-            "require_exp": True,
+            "require": ["exp"],
             "verify_aud": False,
         },
     )

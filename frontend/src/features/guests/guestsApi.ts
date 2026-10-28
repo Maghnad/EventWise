@@ -8,9 +8,14 @@ import { api } from "@/services/api";
 import type {
   CreateGuestRequest,
   Guest,
+  GuestFaqRequest,
+  GuestFaqResponse,
   GuestListParams,
   GuestListResponse,
   MessageResponse,
+  PublicEventResponse,
+  RsvpSubmissionRequest,
+  RsvpSubmissionResponse,
   UpdateGuestRequest,
 } from "@/shared/contracts";
 
@@ -64,8 +69,8 @@ export async function deleteGuest(
 
 export async function getPublicEvent(
   eventId: string,
-): Promise<import("@/shared/contracts").PublicEventResponse> {
-  return api<import("@/shared/contracts").PublicEventResponse>(
+): Promise<PublicEventResponse> {
+  return api<PublicEventResponse>(
     `/api/events/${eventId}/public`,
     {
       method: "GET",
@@ -75,9 +80,9 @@ export async function getPublicEvent(
 
 export async function submitPublicRsvp(
   eventId: string,
-  payload: import("@/shared/contracts").RsvpSubmissionRequest,
-): Promise<import("@/shared/contracts").RsvpSubmissionResponse> {
-  return api<import("@/shared/contracts").RsvpSubmissionResponse>(
+  payload: RsvpSubmissionRequest,
+): Promise<RsvpSubmissionResponse> {
+  return api<RsvpSubmissionResponse>(
     `/api/events/${eventId}/rsvp`,
     {
       method: "POST",
@@ -88,9 +93,9 @@ export async function submitPublicRsvp(
 
 export async function askGuestFaq(
   eventId: string,
-  payload: import("@/shared/contracts").GuestFaqRequest,
-): Promise<import("@/shared/contracts").GuestFaqResponse> {
-  return api<import("@/shared/contracts").GuestFaqResponse>(
+  payload: GuestFaqRequest,
+): Promise<GuestFaqResponse> {
+  return api<GuestFaqResponse>(
     `/api/events/${eventId}/guest-faq`,
     {
       method: "POST",

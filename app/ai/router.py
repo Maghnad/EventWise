@@ -18,8 +18,7 @@ from decimal import Decimal
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.budget_agent import BudgetAgent, BudgetAllocation, BudgetPlanResponse
@@ -57,6 +56,7 @@ from app.shared.models import Event as EventModel
 from app.shared.models import TimelineTask as TimelineTaskModel
 from app.shared.models import User as UserModel
 from app.shared.models import VendorChecklistItem as VendorChecklistItemModel
+from app.shared.queries import get_event_or_404
 from app.users.router import get_current_user, limiter
 
 logger = logging.getLogger(__name__)
@@ -75,18 +75,7 @@ async def _get_user_event(
     user_id: UUID,
 ) -> EventModel:
     """Retrieve event ensuring it exists and is owned by the current user."""
-    stmt = select(EventModel).where(
-        EventModel.id == event_id,
-        EventModel.owner_id == user_id,
-    )
-    result = await db.execute(stmt)
-    event = result.scalar_one_or_none()
-    if not event:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Event '{event_id}' not found or access denied.",
-        )
-    return event
+    return await get_event_or_404(db, event_id, user_id)
 
 
 # ==============================================================================
@@ -481,66 +470,72 @@ async def generate_plan(
         )
         plan = _generate_demo_full_plan(event, vibe_brief)
 
-    # Persist generated plan results to database
     if req.save_to_database:
-        # 1. Save Budget Items
-        for budget_item in plan.budget.items:
-            db_item = BudgetItemModel(
-                event_id=event.id,
-                category=budget_item.category,
-                name=f"{budget_item.category} Allocation",
-                estimated_cost=budget_item.allocated_amount,
-                actual_cost=None,
-                paid_amount=Decimal("0.00"),
-                status=BudgetItemStatus.PLANNED,
-                notes=budget_item.notes or f"Allocated: {budget_item.percentage}%",
-            )
-            db.add(db_item)
-
-        # 2. Save Timeline Tasks
-        event_base_time = event.start_date or datetime.now(UTC)
-        for idx, task in enumerate(plan.timeline.tasks):
-            due = event_base_time - timedelta(days=task.days_before_event)
-            db_task = TimelineTaskModel(
-                event_id=event.id,
-                title=task.title,
-                description=task.description
-                or f"Category: {task.category}, Priority: {task.priority}",
-                start_time=due,
-                end_time=due + timedelta(hours=task.estimated_duration_hours or 1.0),
-                status=TaskStatus.PENDING,
-                category=task.category.lower(),
-                order_index=idx,
-            )
-            db.add(db_task)
-
-        # 3. Save Vendor Checklist Items
-        for vendor_item in plan.vendor.items:
-            due = event_base_time - timedelta(days=vendor_item.booking_lead_time_days)
-            notes_parts = []
-            if vendor_item.estimated_budget_range:
-                notes_parts.append(f"Range: {vendor_item.estimated_budget_range}")
-            if vendor_item.questions_to_ask:
-                notes_parts.append(
-                    f"Questions: {'; '.join(vendor_item.questions_to_ask)}"
-                )
-            if vendor_item.description:
-                notes_parts.append(vendor_item.description)
-
-            db_vendor_task = VendorChecklistItemModel(
-                event_id=event.id,
-                vendor_category=vendor_item.vendor_category,
-                task_name=vendor_item.task_name,
-                is_completed=False,
-                due_date=due,
-                notes=" | ".join(notes_parts),
-            )
-            db.add(db_vendor_task)
-
-        await db.commit()
-        logger.info("Saved plan deliverables to DB for event: %s", event.id)
+        await _persist_generated_plan(db, event, plan)
 
     return plan
+
+
+async def _persist_generated_plan(
+    db: AsyncSession,
+    event: EventModel,
+    plan: FullEventPlanResponse,
+) -> None:
+    """Persist generated budget items, timeline tasks, and vendor checklists."""
+    # 1. Save Budget Items
+    for budget_item in plan.budget.items:
+        db_item = BudgetItemModel(
+            event_id=event.id,
+            category=budget_item.category,
+            name=f"{budget_item.category} Allocation",
+            estimated_cost=budget_item.allocated_amount,
+            actual_cost=None,
+            paid_amount=Decimal("0.00"),
+            status=BudgetItemStatus.PLANNED,
+            notes=budget_item.notes or f"Allocated: {budget_item.percentage}%",
+        )
+        db.add(db_item)
+
+    # 2. Save Timeline Tasks
+    event_base_time = event.start_date or datetime.now(UTC)
+    for idx, task in enumerate(plan.timeline.tasks):
+        due = event_base_time - timedelta(days=task.days_before_event)
+        db_task = TimelineTaskModel(
+            event_id=event.id,
+            title=task.title,
+            description=task.description
+            or f"Category: {task.category}, Priority: {task.priority}",
+            start_time=due,
+            end_time=due + timedelta(hours=task.estimated_duration_hours or 1.0),
+            status=TaskStatus.PENDING,
+            category=task.category.lower(),
+            order_index=idx,
+        )
+        db.add(db_task)
+
+    # 3. Save Vendor Checklist Items
+    for vendor_item in plan.vendor.items:
+        due = event_base_time - timedelta(days=vendor_item.booking_lead_time_days)
+        notes_parts = []
+        if vendor_item.estimated_budget_range:
+            notes_parts.append(f"Range: {vendor_item.estimated_budget_range}")
+        if vendor_item.questions_to_ask:
+            notes_parts.append(f"Questions: {'; '.join(vendor_item.questions_to_ask)}")
+        if vendor_item.description:
+            notes_parts.append(vendor_item.description)
+
+        db_vendor_task = VendorChecklistItemModel(
+            event_id=event.id,
+            vendor_category=vendor_item.vendor_category,
+            task_name=vendor_item.task_name,
+            is_completed=False,
+            due_date=due,
+            notes=" | ".join(notes_parts),
+        )
+        db.add(db_vendor_task)
+
+    await db.commit()
+    logger.info("Saved plan deliverables to DB for event: %s", event.id)
 
 
 # ==============================================================================
@@ -604,6 +599,18 @@ async def generate_concept(
 # ==============================================================================
 
 
+def _resolve_decor_budget(
+    req: GenerateMoodboardRequest,
+    event: EventModel,
+) -> Decimal:
+    """Resolve decor budget from request override, event budget, or default."""
+    if req.decor_budget is not None and req.decor_budget > 0:
+        return req.decor_budget
+    if event.total_budget and event.total_budget > 0:
+        return event.total_budget * Decimal("0.25")
+    return Decimal("5000.00")
+
+
 @router.post(
     "/events/{event_id}/moodboard",
     response_model=MoodboardResponse,
@@ -630,13 +637,7 @@ async def generate_moodboard(
 
     desc_part = event.description or event.location or "Celebration"
     concept = req.concept or f"{event.title} - {desc_part}"
-
-    if req.decor_budget is not None and req.decor_budget > 0:
-        decor_budget = req.decor_budget
-    elif event.total_budget and event.total_budget > 0:
-        decor_budget = event.total_budget * Decimal("0.25")
-    else:
-        decor_budget = Decimal("5000.00")
+    decor_budget = _resolve_decor_budget(req, event)
 
     agent = MoodboardAgent()
     try:

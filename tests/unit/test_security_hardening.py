@@ -22,7 +22,6 @@ from uuid import uuid4
 import pyotp
 import pytest
 from fastapi import HTTPException
-from jose import JWTError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -34,6 +33,7 @@ from app.shared.models import Event as EventModel
 from app.shared.models import User as UserModel
 from app.shared.sanitizer import sanitize_text
 from app.users.utils import (
+    JWTError,
     create_access_token,
     decode_token,
     hash_password,

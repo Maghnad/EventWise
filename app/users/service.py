@@ -9,7 +9,6 @@ from __future__ import annotations
 from uuid import UUID
 
 from fastapi import HTTPException, status
-from jose import JWTError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,6 +26,7 @@ from app.shared.contracts import (
 )
 from app.shared.models import User as UserModel
 from app.users.utils import (
+    JWTError,
     create_access_token,
     create_refresh_token,
     decode_token,
