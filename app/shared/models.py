@@ -80,13 +80,13 @@ class TimestampMixin:
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
-        server_default=func.now(),
+        server_default=func.now(),  # pylint: disable=not-callable
         nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
-        server_default=func.now(),
+        server_default=func.now(),  # pylint: disable=not-callable
         onupdate=lambda: datetime.now(UTC),
         nullable=False,
     )

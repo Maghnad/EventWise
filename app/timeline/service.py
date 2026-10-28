@@ -111,7 +111,7 @@ class TimelineService:
         tasks = tasks_result.scalars().all()
 
         # Compute completed count
-        completed_stmt = select(func.count()).where(
+        completed_stmt = select(func.count()).where(  # pylint: disable=not-callable
             TimelineTaskModel.event_id == event_id,
             TimelineTaskModel.status == TaskStatus.COMPLETED,
         )

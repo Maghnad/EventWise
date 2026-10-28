@@ -32,7 +32,8 @@ from app.shared.contracts import (
 from app.shared.models import Event as EventModel
 from app.shared.models import Guest as GuestModel
 from app.shared.models import User as UserModel
-from app.shared.queries import get_event_or_404
+from app.shared.queries import get_event_or_404, get_public_event_or_404
+from app.shared.sanitizer import sanitize_text
 
 
 class GuestService:
@@ -194,8 +195,6 @@ class GuestService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="A guest with this email is already on the guest list.",
             )
-
-        from app.shared.sanitizer import sanitize_text
 
         guest = GuestModel(
             event_id=event_id,
@@ -419,14 +418,7 @@ class GuestService:
         event_id: UUID,
     ) -> PublicEventResponse:
         """Fetch basic public event metadata for unauthenticated guest RSVP."""
-        stmt = select(EventModel).where(EventModel.id == event_id)
-        result = await db.execute(stmt)
-        event = result.scalar_one_or_none()
-        if event is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Event not found.",
-            )
+        event = await get_public_event_or_404(db, event_id)
         return PublicEventResponse(
             id=event.id,
             title=event.title,
@@ -447,14 +439,7 @@ class GuestService:
         data: RsvpSubmissionRequest,
     ) -> RsvpSubmissionResponse:
         """Record or update a public RSVP submission from a guest."""
-        stmt = select(EventModel).where(EventModel.id == event_id)
-        result = await db.execute(stmt)
-        event = result.scalar_one_or_none()
-        if event is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Event not found.",
-            )
+        _event = await get_public_event_or_404(db, event_id)
 
         guest_stmt = select(GuestModel).where(
             GuestModel.event_id == event_id,
@@ -462,8 +447,6 @@ class GuestService:
         )
         res = await db.execute(guest_stmt)
         guest = res.scalar_one_or_none()
-
-        from app.shared.sanitizer import sanitize_text
 
         raw_name = data.full_name or data.email.split("@")[0].replace(".", " ").title()
         guest_name = sanitize_text(raw_name) or "Guest"
@@ -519,13 +502,7 @@ class GuestService:
         question: str,
     ) -> GuestFaqResponse:
         """Answer guest inquiries using event details and situational context."""
-        stmt = select(EventModel).where(EventModel.id == event_id)
-        result = await db.execute(stmt)
-        event = result.scalar_one_or_none()
-        if event is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Event not found."
-            )
+        event = await get_public_event_or_404(db, event_id)
 
         q = question.lower()
         title = event.title

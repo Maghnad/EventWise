@@ -22,7 +22,8 @@ def sanitize_text(value: str | None) -> str | None:
     if value is None:
         return None
     if isinstance(value, list):
-        return [sanitize_text(item) for item in value if item is not None]  # type: ignore[return-value]
+        sanitized_items = [sanitize_text(item) for item in value if item is not None]
+        return sanitized_items  # type: ignore[return-value]
     if not isinstance(value, str):
         return value
 

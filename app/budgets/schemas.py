@@ -17,8 +17,16 @@ from app.shared.contracts import (
 )
 from app.shared.contracts import (
     BudgetItemStatus,
-    ContractModel,
     MessageResponse,
+)
+from app.shared.contracts import (
+    BudgetOverviewResponse as BaseBudgetOverviewResponse,
+)
+from app.shared.contracts import (
+    CreateBudgetItemRequest as BaseCreateBudgetItemRequest,
+)
+from app.shared.contracts import (
+    UpdateBudgetItemRequest as BaseUpdateBudgetItemRequest,
 )
 
 
@@ -68,38 +76,27 @@ class BudgetItemResponse(BudgetItemContract):
         return data
 
 
-class BudgetOverviewResponse(ContractModel):
+class BudgetOverviewResponse(BaseBudgetOverviewResponse):
     """Event budget rollup and item list."""
 
-    event_id: UUID
-    total_budget: Decimal
-    total_allocated: Decimal
-    total_spent: Decimal
-    remaining_budget: Decimal
-    currency: str
     items: list[BudgetItemResponse]
 
 
-class CreateBudgetItemRequest(ContractModel):
+class CreateBudgetItemRequest(BaseCreateBudgetItemRequest):
     """Create a new budget line item.
 
     Supports shorthand (category, allocated, spent) as well as full contract fields.
     """
 
-    category: str
     name: str = ""
     allocated: Decimal | None = None
     spent: Decimal | None = None
     estimated_cost: Decimal = Decimal("0.00")
-    actual_cost: Decimal | None = None
-    paid_amount: Decimal = Decimal("0.00")
-    status: BudgetItemStatus = BudgetItemStatus.PLANNED
-    vendor_id: UUID | None = None
-    notes: str = ""
 
     @model_validator(mode="before")
     @classmethod
     def map_aliases(cls, data: Any) -> Any:
+        """Map allocated, spent, and category aliases."""
         if isinstance(data, dict):
             # Map allocated -> estimated_cost
             if "allocated" in data and data["allocated"] is not None:
@@ -121,7 +118,7 @@ class CreateBudgetItemRequest(ContractModel):
         return data
 
 
-class UpdateBudgetItemRequest(ContractModel):
+class UpdateBudgetItemRequest(BaseUpdateBudgetItemRequest):
     """Update an existing budget line item.
 
     Supports category, allocated, spent, and item id.
@@ -129,20 +126,13 @@ class UpdateBudgetItemRequest(ContractModel):
 
     id: UUID | None = None
     item_id: UUID | None = None
-    category: str | None = None
-    name: str | None = None
     allocated: Decimal | None = None
     spent: Decimal | None = None
-    estimated_cost: Decimal | None = None
-    actual_cost: Decimal | None = None
-    paid_amount: Decimal | None = None
-    status: BudgetItemStatus | None = None
-    vendor_id: UUID | None = None
-    notes: str | None = None
 
     @model_validator(mode="before")
     @classmethod
     def map_aliases(cls, data: Any) -> Any:
+        """Map allocated, spent, and ID aliases for updates."""
         if isinstance(data, dict):
             if (
                 "allocated" in data

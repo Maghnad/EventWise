@@ -6,7 +6,6 @@ for vendor checklist management.
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Any
 from uuid import UUID
 
@@ -15,6 +14,12 @@ from pydantic import model_validator
 from app.shared.contracts import (
     ContractModel,
     MessageResponse,
+)
+from app.shared.contracts import (
+    CreateVendorChecklistItemRequest as BaseCreateVendorChecklistItemRequest,
+)
+from app.shared.contracts import (
+    UpdateVendorChecklistItemRequest as BaseUpdateVendorChecklistItemRequest,
 )
 from app.shared.contracts import (
     VendorChecklistItem as VendorChecklistItemContract,
@@ -30,6 +35,7 @@ class VendorChecklistItemResponse(VendorChecklistItemContract):
     @model_validator(mode="before")
     @classmethod
     def populate_fields(cls, data: Any) -> Any:
+        """Populate category and description fields for responses."""
         if isinstance(data, dict):
             cat = data.get("category") or data.get("vendor_category", "")
             data["category"] = cat
@@ -71,7 +77,7 @@ class VendorChecklistResponse(ContractModel):
     completed_items: int
 
 
-class CreateVendorChecklistItemRequest(ContractModel):
+class CreateVendorChecklistItemRequest(BaseCreateVendorChecklistItemRequest):
     """Payload for creating a vendor checklist item.
 
     Supports category, description, is_completed as well as vendor_category, task_name.
@@ -81,15 +87,11 @@ class CreateVendorChecklistItemRequest(ContractModel):
     category: str | None = None
     task_name: str = ""
     description: str | None = None
-    is_completed: bool = False
-    due_date: datetime | None = None
-    assigned_vendor_id: UUID | None = None
-    assigned_vendor_name: str | None = None
-    notes: str = ""
 
     @model_validator(mode="before")
     @classmethod
     def map_aliases(cls, data: Any) -> Any:
+        """Map category and description aliases for creation."""
         if isinstance(data, dict):
             # category <-> vendor_category
             if data.get("category") and not data.get("vendor_category"):
@@ -113,24 +115,18 @@ class CreateVendorChecklistItemRequest(ContractModel):
         return data
 
 
-class UpdateVendorChecklistItemRequest(ContractModel):
+class UpdateVendorChecklistItemRequest(BaseUpdateVendorChecklistItemRequest):
     """Payload for updating a vendor checklist item."""
 
     id: UUID | None = None
     item_id: UUID | None = None
-    vendor_category: str | None = None
     category: str | None = None
-    task_name: str | None = None
     description: str | None = None
-    is_completed: bool | None = None
-    due_date: datetime | None = None
-    assigned_vendor_id: UUID | None = None
-    assigned_vendor_name: str | None = None
-    notes: str | None = None
 
     @model_validator(mode="before")
     @classmethod
     def map_aliases(cls, data: Any) -> Any:
+        """Map category, description, and ID aliases for updates."""
         if isinstance(data, dict):
             if (
                 "category" in data

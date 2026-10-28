@@ -148,16 +148,9 @@ async def csrf_protect_middleware(request: Request, call_next):
 
     # Issue CSRF cookie on initial GET if not already present
     if "csrf_token" not in request.cookies and request.method == "GET":
-        import secrets
+        from app.users.utils import set_csrf_cookie
 
-        response.set_cookie(
-            key="csrf_token",
-            value=secrets.token_urlsafe(32),
-            httponly=False,
-            samesite="lax",
-            secure=settings.app_env.lower() in ("production", "prod"),
-            path="/",
-        )
+        set_csrf_cookie(response)
     return response
 
 

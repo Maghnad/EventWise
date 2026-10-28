@@ -17,7 +17,13 @@ from app.shared.contracts import (
     MessageResponse,
 )
 from app.shared.contracts import (
+    CreateGuestRequest as BaseCreateGuestRequest,
+)
+from app.shared.contracts import (
     Guest as GuestContract,
+)
+from app.shared.contracts import (
+    GuestListResponse as BaseGuestListResponse,
 )
 
 
@@ -78,18 +84,13 @@ class GuestResponse(GuestContract):
         return data
 
 
-class GuestListResponse(ContractModel):
+class GuestListResponse(BaseGuestListResponse):
     """Paginated guest list with RSVP summary breakdown."""
 
     items: list[GuestResponse]
-    total: int
-    confirmed_count: int
-    declined_count: int
-    pending_count: int
-    total_attending_with_plus_ones: int
 
 
-class CreateGuestRequest(ContractModel):
+class CreateGuestRequest(BaseCreateGuestRequest):
     """Payload for creating/inviting a guest.
 
     Supports name, email, rsvp_status, dietary, plus_one.
@@ -97,19 +98,13 @@ class CreateGuestRequest(ContractModel):
 
     name: str = ""
     full_name: str = ""
-    email: EmailStr
-    phone: str | None = None
-    rsvp_status: GuestRsvpStatus = GuestRsvpStatus.PENDING
     dietary: str | list[str] | None = None
-    dietary_restrictions: list[str] = Field(default_factory=list)
     plus_one: int | bool | None = None
-    plus_ones: int = 0
-    table_number: int | None = None
-    notes: str = ""
 
     @model_validator(mode="before")
     @classmethod
     def map_aliases(cls, data: Any) -> Any:
+        """Map shorthand field aliases to canonical schema."""
         if isinstance(data, dict):
             # name <-> full_name
             if data.get("name") and not data.get("full_name"):

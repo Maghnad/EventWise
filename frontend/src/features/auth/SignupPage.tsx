@@ -91,7 +91,10 @@ export function SignupPage(): React.JSX.Element {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <main
+      aria-label="Sign Up"
+      className="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8"
+    >
       <Card className="w-full max-w-md p-8 shadow-2xl">
         <header className="mb-8 text-center">
           <h1 className="gradient-text text-3xl font-extrabold tracking-tight">
@@ -249,6 +252,6 @@ export function SignupPage(): React.JSX.Element {
           </Link>
         </footer>
       </Card>
-    </div>
+    </main>
   );
 }

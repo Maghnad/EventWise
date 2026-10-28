@@ -10,9 +10,7 @@ from __future__ import annotations
 # Router & Rate Limiter Configuration
 # ==============================================================================
 import os
-import secrets
 from typing import Annotated
-from uuid import UUID
 
 import pyotp
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
@@ -38,7 +36,13 @@ from app.users.schemas import (
     UserProfileResponse,
 )
 from app.users.service import UserService
-from app.users.utils import JWTError, decode_token
+from app.users.utils import (
+    JWTError,
+    decode_token,
+    parse_token_user_id,
+    set_csrf_cookie,
+    verify_user_active,
+)
 
 settings = get_settings()
 limiter = Limiter(key_func=get_remote_address)
@@ -100,15 +104,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    try:
-        user_id = UUID(sub)
-    except ValueError as err:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Malformed user identifier in token.",
-            headers={"WWW-Authenticate": "Bearer"},
-        ) from err
-
+    user_id = parse_token_user_id(sub)
     user = await UserService.get_by_id(db, user_id)
     if user is None:
         raise HTTPException(
@@ -117,12 +113,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="User account is deactivated.",
-        )
-
+    verify_user_active(user)
     return user
 
 
@@ -144,7 +135,9 @@ async def signup(
     data: SignupRequest,
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> AuthResponse:
-    """Register a new user, issue an initial JWT pair, set secure cookies, and return account details."""
+    """Register a new user, issue an initial JWT pair, set secure cookies,
+    and return account details.
+    """
     _ = request
     result = await UserService.signup(db, data)
 
@@ -158,15 +151,7 @@ async def signup(
         path="/auth",
         max_age=7 * 24 * 3600,
     )
-    response.set_cookie(
-        key="csrf_token",
-        value=secrets.token_urlsafe(32),
-        httponly=False,
-        samesite="lax",
-        secure=settings.app_env.lower() in ("production", "prod"),
-        path="/",
-        max_age=7 * 24 * 3600,
-    )
+    set_csrf_cookie(response)
     return result
 
 
@@ -197,15 +182,7 @@ async def login(
         path="/auth",
         max_age=7 * 24 * 3600,
     )
-    response.set_cookie(
-        key="csrf_token",
-        value=secrets.token_urlsafe(32),
-        httponly=False,
-        samesite="lax",
-        secure=settings.app_env.lower() in ("production", "prod"),
-        path="/",
-        max_age=7 * 24 * 3600,
-    )
+    set_csrf_cookie(response)
     return result
 
 

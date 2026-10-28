@@ -20,6 +20,9 @@ from app.shared.contracts import (
 from app.shared.contracts import (
     TimelineTask as TimelineTaskContract,
 )
+from app.shared.contracts import (
+    UpdateTimelineTaskRequest as BaseUpdateTimelineTaskRequest,
+)
 
 
 class TimelineTaskResponse(TimelineTaskContract):
@@ -31,19 +34,18 @@ class TimelineTaskResponse(TimelineTaskContract):
     @model_validator(mode="before")
     @classmethod
     def populate_fields(cls, data: Any) -> Any:
+        """Populate due_date and is_completed convenience fields."""
         if isinstance(data, dict):
             end = data.get("end_time")
             data["due_date"] = data.get("due_date", end)
             if "is_completed" not in data:
                 task_status = data.get("status")
-                data["is_completed"] = (
-                    task_status == TaskStatus.COMPLETED or task_status == "completed"
-                )
+                data["is_completed"] = task_status in (TaskStatus.COMPLETED, "completed")
             return data
 
         if hasattr(data, "title"):
             # ORM model
-            is_comp = data.status == TaskStatus.COMPLETED or data.status == "completed"
+            is_comp = data.status in (TaskStatus.COMPLETED, "completed")
             return {
                 "id": data.id,
                 "event_id": data.event_id,
@@ -92,6 +94,7 @@ class CreateTimelineTaskRequest(ContractModel):
     @model_validator(mode="before")
     @classmethod
     def map_aliases(cls, data: Any) -> Any:
+        """Map due_date, is_completed, and timeframe aliases."""
         if isinstance(data, dict):
             # Map due_date -> end_time and start_time
             if "due_date" in data and data["due_date"] is not None:
@@ -119,7 +122,7 @@ class CreateTimelineTaskRequest(ContractModel):
         return data
 
 
-class PatchTimelineTaskRequest(ContractModel):
+class PatchTimelineTaskRequest(BaseUpdateTimelineTaskRequest):
     """Update/patch an existing timeline task.
 
     Supports title, due_date, is_completed, and task_id.
@@ -127,20 +130,13 @@ class PatchTimelineTaskRequest(ContractModel):
 
     id: UUID | None = None
     task_id: UUID | None = None
-    title: str | None = None
     due_date: datetime | None = None
     is_completed: bool | None = None
-    description: str | None = None
-    start_time: datetime | None = None
-    end_time: datetime | None = None
-    assigned_to: str | None = None
-    status: TaskStatus | None = None
-    category: str | None = None
-    order_index: int | None = None
 
     @model_validator(mode="before")
     @classmethod
     def map_aliases(cls, data: Any) -> Any:
+        """Map patch aliases for due_date, status, and task identifiers."""
         if isinstance(data, dict):
             if "due_date" in data and data["due_date"] is not None:
                 if "end_time" not in data or data["end_time"] is None:

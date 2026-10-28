@@ -115,3 +115,79 @@ async def test_protected_route_unauthorized_without_token(
     """GET /auth/me without an Authorization header should return 401."""
     response = await async_client.get("/auth/me")
     assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_endpoint_refresh_token_cookie_and_missing(
+    async_client: AsyncClient,
+) -> None:
+    """Test refresh token via cookie and missing token rejection."""
+    # 1. Missing token returns 401
+    empty_resp = await async_client.post("/auth/refresh")
+    assert empty_resp.status_code == 401
+
+    # 2. Signup and use cookie for refresh
+    signup_payload = {
+        "email": "cookie_refresher@example.com",
+        "password": "Password123!",
+        "full_name": "Cookie User",
+    }
+    signup_resp = await async_client.post("/auth/signup", json=signup_payload)
+    refresh_token = signup_resp.json()["tokens"]["refresh_token"]
+
+    # Provide cookie instead of body
+    async_client.cookies.set("refresh_token", refresh_token)
+    cookie_resp = await async_client.post("/auth/refresh")
+    async_client.cookies.delete("refresh_token")
+    assert cookie_resp.status_code == 200
+    assert "access_token" in cookie_resp.json()["tokens"]
+
+
+@pytest.mark.asyncio
+async def test_mfa_setup_and_verify_flow(async_client: AsyncClient) -> None:
+    """Test TOTP MFA setup and verification endpoints."""
+    import pyotp
+
+    signup_payload = {
+        "email": "mfa_tester@example.com",
+        "password": "Password123!",
+        "full_name": "MFA User",
+    }
+    signup_resp = await async_client.post("/auth/signup", json=signup_payload)
+    token = signup_resp.json()["tokens"]["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Verify before setup should fail with 400
+    bad_verify = await async_client.post(
+        "/auth/mfa/verify",
+        json={"code": "123456"},
+        headers=headers,
+    )
+    assert bad_verify.status_code == 400
+
+    # Setup MFA
+    setup_resp = await async_client.post("/auth/mfa/setup", headers=headers)
+    assert setup_resp.status_code == 200
+    data = setup_resp.json()
+    secret = data["secret"]
+    assert "otpauth://" in data["provisioning_uri"]
+
+    # Verify with invalid code
+    fail_verify = await async_client.post(
+        "/auth/mfa/verify",
+        json={"code": "000000"},
+        headers=headers,
+    )
+    assert fail_verify.status_code == 400
+
+    # Verify with valid TOTP code
+    totp = pyotp.TOTP(secret)
+    valid_code = totp.now()
+    good_verify = await async_client.post(
+        "/auth/mfa/verify",
+        json={"code": valid_code},
+        headers=headers,
+    )
+    assert good_verify.status_code == 200
+    assert good_verify.json()["enabled"] is True
+

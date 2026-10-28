@@ -31,7 +31,9 @@ from app.users.utils import (
     create_refresh_token,
     decode_token,
     hash_password,
+    parse_token_user_id,
     verify_password,
+    verify_user_active,
 )
 
 settings = get_settings()
@@ -138,11 +140,7 @@ class UserService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        if not user.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User account is deactivated.",
-            )
+        verify_user_active(user)
 
         access_token = create_access_token(user.id, user.email)
         refresh_token = create_refresh_token(user.id)
@@ -190,22 +188,16 @@ class UserService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        try:
-            user_id = UUID(sub)
-        except ValueError as err:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Malformed token subject identifier.",
-                headers={"WWW-Authenticate": "Bearer"},
-            ) from err
+        user_id = parse_token_user_id(sub)
 
         user = await cls.get_by_id(db, user_id)
-        if user is None or not user.is_active:
+        if user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User associated with this token is not active.",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+        verify_user_active(user)
 
         new_access_token = create_access_token(user.id, user.email)
         new_refresh_token = create_refresh_token(user.id)

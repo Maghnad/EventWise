@@ -5,7 +5,7 @@
 [![Next.js 14](https://img.shields.io/badge/Next.js-14.2-black.svg?logo=next.js&logoColor=white)](https://nextjs.org)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB.svg?logo=python&logoColor=white)](https://www.python.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Coverage](https://img.shields.io/badge/Coverage-91.25%25-brightgreen.svg)]()
+[![Coverage](https://img.shields.io/badge/Coverage-92.00%25-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **One-line tagline:** Plan weddings, birthdays, and community events with AI-generated budgets, timelines, vendor checklists, and personalized ideas.
@@ -181,7 +181,7 @@ Open `http://localhost:3000` in your browser.
 
 ## 🧪 Testing & Quality Assurance
 
-- **Backend:** 241 automated tests with **91.25% code coverage** (`pytest --cov=app --cov-fail-under=80`).
+- **Backend:** 243 automated tests with **92.00% code coverage** (`pytest --cov=app --cov-fail-under=80`).
 - **Frontend:** 38 unit & component tests passing via Vitest + React Testing Library (`npm test`).
 - **Type Safety & Linting:** Strict static type enforcement with `mypy` and linting with `ruff`.
 - **CI Pipeline:** Automated GitHub Actions workflow testing every pull request across Python 3.12 and Node 20.

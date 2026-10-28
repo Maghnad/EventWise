@@ -6,6 +6,7 @@ Zero `Any` types used.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
@@ -406,7 +407,7 @@ class BudgetOverviewResponse(ContractModel):
     total_spent: Decimal
     remaining_budget: Decimal
     currency: str
-    items: list[BudgetItem]
+    items: Sequence[BudgetItem]
 
 
 class CreateBudgetItemRequest(ContractModel):
@@ -624,7 +625,7 @@ class GuestListParams(ContractModel):
 class GuestListResponse(ContractModel):
     """Paginated guest list with RSVP summary breakdown."""
 
-    items: list[Guest]
+    items: Sequence[Guest]
     total: int
     confirmed_count: int
     declined_count: int

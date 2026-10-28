@@ -46,3 +46,20 @@ async def get_event_or_404(
             detail="Event not found.",
         )
     return event
+
+
+async def get_public_event_or_404(
+    db: AsyncSession,
+    event_id: UUID,
+) -> EventModel:
+    """Retrieve an event by ID without tenant restrictions for public RSVP."""
+    stmt = select(EventModel).where(EventModel.id == event_id)
+    result = await db.execute(stmt)
+    event = result.scalar_one_or_none()
+
+    if event is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Event not found.",
+        )
+    return event

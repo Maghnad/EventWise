@@ -6,15 +6,22 @@ creation and decoding.
 
 from __future__ import annotations
 
+import secrets
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 import bcrypt
 import jwt
+from fastapi import HTTPException, status
 from jwt.exceptions import PyJWTError as JWTError
 
 from app.config import get_settings
+
+if TYPE_CHECKING:
+    from fastapi import Response
+
+    from app.shared.models import User as UserModel
 
 __all__ = [
     "JWTError",
@@ -22,7 +29,10 @@ __all__ = [
     "create_refresh_token",
     "decode_token",
     "hash_password",
+    "parse_token_user_id",
+    "set_csrf_cookie",
     "verify_password",
+    "verify_user_active",
 ]
 
 settings = get_settings()
@@ -138,7 +148,8 @@ def decode_token(token: str) -> dict[str, Any]:
     """Decode and validate a signed JWT token.
 
     SECURITY:
-    - Explicitly pinned to HS256 to prevent algorithm confusion attacks ('none' or public-key confusion).
+    - Explicitly pinned to HS256 to prevent algorithm confusion attacks
+      ('none' or public-key confusion).
     - Requires and verifies expiration ('exp').
 
     Args:
@@ -161,3 +172,43 @@ def decode_token(token: str) -> dict[str, Any]:
             "verify_aud": False,
         },
     )
+
+
+def set_csrf_cookie(response: Response) -> None:
+    """Set double-submit non-HttpOnly CSRF cookie on response."""
+    response.set_cookie(
+        key="csrf_token",
+        value=secrets.token_urlsafe(32),
+        httponly=False,
+        samesite="lax",
+        secure=settings.app_env.lower() in ("production", "prod"),
+        path="/",
+        max_age=7 * 24 * 3600,
+    )
+
+
+def parse_token_user_id(sub: str | None) -> UUID:
+    """Validate and convert token subject claim to user UUID."""
+    if not sub:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Subject claim missing from token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    try:
+        return UUID(sub)
+    except ValueError as err:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid subject identifier in token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from err
+
+
+def verify_user_active(user: UserModel) -> None:
+    """Ensure user account is active."""
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is deactivated.",
+        )
