@@ -181,7 +181,7 @@ Open `http://localhost:3000` in your browser.
 
 ## 🧪 Testing & Quality Assurance
 
-- **Backend:** 240 automated tests with **90.09% code coverage** (`pytest --cov=app --cov-fail-under=80`).
+- **Backend:** 240 automated tests with **90.80% code coverage** (`pytest --cov=app --cov-fail-under=80`).
 - **Frontend:** 38 unit & component tests passing via Vitest + React Testing Library (`npm test`).
 - **Type Safety & Linting:** Strict static type enforcement with `mypy` and linting with `ruff`.
 - **CI Pipeline:** Automated GitHub Actions workflow testing every pull request across Python 3.12 and Node 20.
